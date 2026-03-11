@@ -8,4 +8,23 @@ export const categoriesData = [
 ];
 
 // 文章数据
-export const articlesData = {};
+export const articlesData = {
+    java: [
+        {
+            id: '01',
+            title: 'Java使用JNA方式调用DLL',
+            category: 'java',
+            date: '2020-03-22',
+            image: '/src/assets/java.png'
+        }
+    ],
+    springboot: [
+        {
+            id: '00',
+            title: '深入理解Spring两大特性：IoC和AOP',
+            category: 'springboot',
+            date: '2019-02-14',
+            image: '/src/assets/springboot.png'
+        }
+    ]
+};
