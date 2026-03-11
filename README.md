@@ -1,5 +1,49 @@
-# Vue 3 + Vite
+<h1 align="center">Hello Blog</h1>
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+<p align="center">
+    <a href="https://github.com/dkbnull/hello-blog" target="_blank">
+       <img src="https://img.shields.io/badge/GitHub-访问地址-blue?logo=github">
+    </a>
+    <a href="https://gitee.com/dkbnull/hello-blog" target="_blank">
+       <img src="https://img.shields.io/badge/Gitee-访问地址-red?logo=gitee">
+    </a>
+</p>
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+## 项目简介
+
+HelloBlog 是一个基于 Vue 3 + Vite 构建的个人博客系统，用于展示技术文章和分享知识。
+
+## 项目特性
+
+- **现代化技术栈**：Vue 3 + Vite + Vue Router
+- **响应式设计**：适配不同设备屏幕
+- **文章分类**：支持按分类浏览文章
+- **Markdown 支持**：使用 marked 库解析 Markdown 内容
+- **简洁美观**：清晰的界面设计和用户体验
+
+## 功能说明
+
+### 首页
+- 展示文章列表
+- 文章卡片展示
+
+### 分类页
+- 按分类浏览文章
+- 支持 Java、Spring Boot 等分类
+
+### 文章详情页
+- 展示文章内容
+- 支持 Markdown 格式
+
+### 关于页
+- 个人信息展示
+
+## 如何添加文章
+
+1. 在 `src/data/articles/` 目录下创建对应分类的文件夹（如 `java/`、`springboot/`）
+2. 在对应分类文件夹中创建 HTML 文件
+3. 在 `src/data/data.js` 中添加文章信息
+
+---
+
+© 2026 Hello Blog
