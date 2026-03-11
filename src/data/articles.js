@@ -48,7 +48,9 @@ export const getArticleContent = async (categoryId, articleId) => {
         // 由于浏览器不支持通配符，我们需要根据文章标题构建具体的文件名
         const article = getArticleById(categoryId, articleId);
         const htmlFileName = `${articleId}_${article.title}.html`;
-        const htmlResponse = await fetch(`/src/data/articles/${categoryId}/${htmlFileName}`);
+        // 使用相对路径加载文章内容
+        const htmlPath = new URL(`./articles/${categoryId}/${htmlFileName}`, import.meta.url).href;
+        const htmlResponse = await fetch(htmlPath);
         if (htmlResponse.ok) {
             // 直接返回完整的 HTML 内容
             return await htmlResponse.text();
@@ -58,7 +60,8 @@ export const getArticleContent = async (categoryId, articleId) => {
         // 由于浏览器不支持通配符，我们需要根据文章标题构建具体的文件名
         if (article) {
             const mdFileName = `${articleId}_${article.title}.md`;
-            const mdResponse = await fetch(`/src/data/articles/${categoryId}/${mdFileName}`);
+            const mdPath = new URL(`./articles/${categoryId}/${mdFileName}`, import.meta.url).href;
+            const mdResponse = await fetch(mdPath);
             if (mdResponse.ok) {
                 const mdContent = await mdResponse.text();
                 // 使用 marked 库将 Markdown 转换为 HTML

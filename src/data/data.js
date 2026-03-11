@@ -15,7 +15,7 @@ export const articlesData = {
             title: 'Java使用JNA方式调用DLL',
             category: 'java',
             date: '2020-03-22',
-            image: '/src/assets/java.png'
+            image: new URL('../assets/java.png', import.meta.url).href
         }
     ],
     springboot: [
@@ -24,7 +24,7 @@ export const articlesData = {
             title: '深入理解Spring两大特性：IoC和AOP',
             category: 'springboot',
             date: '2019-02-14',
-            image: '/src/assets/springboot.png'
+            image: new URL('../assets/springboot.png', import.meta.url).href
         }
     ]
 };
