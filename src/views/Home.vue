@@ -3,21 +3,7 @@
     <div class="container">
       <div class="home-content">
         <!-- 左侧导航栏 -->
-        <aside class="sidebar">
-          <div class="sidebar-section">
-            <h3 class="sidebar-title">分类</h3>
-            <ul class="category-list">
-              <li v-for="category in categories" :key="category.id">
-                <router-link :to="`/category/${category.id}`">
-                  {{ category.name }}
-                  <span class="category-count">({{ getArticleCount(category.id) }})</span>
-                </router-link>
-              </li>
-            </ul>
-          </div>
-
-
-        </aside>
+        <Sidebar :active-category="selectedCategory"/>
 
         <!-- 右侧内容区 -->
         <main class="content">
@@ -51,8 +37,9 @@
 <script setup>
 import {computed, onMounted, ref, watch} from 'vue';
 import {useRoute} from 'vue-router';
-import {getAllArticles, getArticleCount, getArticlesByCategory, getCategories, getCategoryName} from '../data/articles';
+import {getAllArticles, getArticlesByCategory, getCategories, getCategoryName} from '../data/articles';
 import PostCard from '../components/PostCard.vue';
+import Sidebar from '../components/Sidebar.vue';
 
 const route = useRoute();
 const searchQuery = ref('');
@@ -81,7 +68,6 @@ const categoryArticles = computed(() => {
   }
   return getArticlesByCategory(selectedCategory.value);
 });
-
 
 // 监听路由变化，更新搜索查询和选中分类
 watch(() => route.params.category, (newCategory) => {
@@ -115,73 +101,6 @@ onMounted(() => {
   gap: 2rem;
 }
 
-/* 左侧导航栏 */
-.sidebar {
-  width: 250px;
-  flex-shrink: 0;
-}
-
-.sidebar-section {
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.dark-mode .sidebar-section {
-  background-color: #1e1e1e;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.sidebar-title {
-  font-size: 1.2rem;
-  margin-bottom: 1rem;
-  color: #333;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 0.5rem;
-}
-
-.dark-mode .sidebar-title {
-  color: #e0e0e0;
-  border-bottom-color: #333;
-}
-
-.category-list, .recent-articles {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.category-list li, .recent-articles li {
-  margin-bottom: 0.75rem;
-}
-
-.category-list a, .recent-articles a {
-  color: #333;
-  text-decoration: none;
-  transition: color 0.3s;
-  display: block;
-  padding: 0.25rem 0;
-}
-
-.dark-mode .category-list a, .dark-mode .recent-articles a {
-  color: #e0e0e0;
-}
-
-.category-list a:hover, .recent-articles a:hover {
-  color: #42b883;
-}
-
-.category-count {
-  font-size: 0.8rem;
-  color: #666;
-  margin-left: 0.5rem;
-}
-
-.dark-mode .category-count {
-  color: #999;
-}
 
 /* 右侧内容区 */
 .content {

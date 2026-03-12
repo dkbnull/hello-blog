@@ -2,8 +2,8 @@
 
 // 分类数据
 export const categoriesData = [
-    {id: 'frontend', name: '前端开发'},
-    {id: 'backend', name: '后端开发'},
+    {id: 'frontend', name: '前端开发', icon: '💻'},
+    {id: 'backend', name: '后端开发', icon: '🖥️'},
 ];
 
 // 文章数据
