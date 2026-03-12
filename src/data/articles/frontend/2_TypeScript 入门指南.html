@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypeScript 入门指南 | 个人博客</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .article-content {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+        }
+
+        .article-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+            text-align: center;
+        }
+
+        .article-meta {
+            font-size: 0.875rem;
+            color: #666;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .article-body {
+            margin-bottom: 1rem;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .article-body h1,
+        .article-body h2,
+        .article-body h3,
+        .article-body h4,
+        .article-body h5,
+        .article-body h6 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .article-body p {
+            margin-bottom: 1rem;
+        }
+
+        .article-body code {
+            background-color: #f0f0f0;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .article-body pre {
+            background-color: #f0f0f0;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin-bottom: 1rem;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .article-body pre code {
+            background-color: transparent;
+            padding: 0;
+        }
+
+        .code-block {
+            position: relative;
+        }
+
+        .code-block::before {
+            content: attr(data-language);
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.1);
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            border-bottom-left-radius: 4px;
+        }
+
+        .back-link {
+            display: inline-block;
+            background-color: #42b883;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            margin-top: 2rem;
+        }
+
+        .back-link:hover {
+            background-color: #36a06f;
+        }
+
+        .article-tags {
+            margin: 2rem 0;
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background-color: #f0f0f0;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="article-content">
+        <h1 class="article-title">TypeScript 入门指南</h1>
+        <div class="article-meta">
+            <span class="article-date">2023-06-20</span>
+            <span class="article-author">作者: 李四</span>
+            <span class="article-category">分类: 前端开发</span>
+        </div>
+        <div class="article-tags">
+            <span class="tag">TypeScript</span>
+            <span class="tag">前端</span>
+            <span class="tag">JavaScript</span>
+        </div>
+        <div class="article-body">
+            <h1>TypeScript 入门指南</h1>
+            <p>TypeScript 是 JavaScript 的超集，它添加了静态类型检查和其他高级特性，使代码更加健壮和可维护。</p>
+            <h2>类型系统</h2>
+            <p>TypeScript 的核心特性是其类型系统，它允许我们为变量、函数参数和返回值指定类型。</p>
+            <div class="code-block" data-language="typescript">
+          <pre><code>// 基本类型
+let isDone: boolean = false;
+let age: number = 18;
+let name: string = "张三";
+
+// 接口
+interface Person {
+  name: string;
+  age: number;
+}
+
+// 函数
+function greet(person: Person): string {
+  return `Hello, ${person.name}!`;
+}
+</code></pre>
+            </div>
+            <h2>泛型</h2>
+            <p>泛型允许我们编写可重用的代码，适用于多种类型。</p>
+        </div>
+        <a href="/public" class="back-link">返回首页</a>
+    </div>
+</div>
+</body>
+</html>
