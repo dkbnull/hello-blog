@@ -2,15 +2,15 @@
   <div class="article-detail">
     <div class="container">
       <div v-if="isHtmlContent" class="html-content" v-html="articleContent"></div>
-      <div v-else class="article-content">
+      <div v-else class="article-content card">
         <h1 class="article-title">{{ article?.title }}</h1>
         <div class="article-meta">
           <span class="article-date">{{ article?.date }}</span>
           <span class="article-category">{{ getCategoryName(article?.category) }}</span>
         </div>
         <div class="article-body" v-html="articleContent"></div>
-        <router-link to="/" class="back-link">返回首页</router-link>
       </div>
+      <router-link to="/" class="back-link btn btn-secondary">返回首页</router-link>
     </div>
   </div>
 </template>
@@ -86,19 +86,11 @@ onMounted(() => {
 .container {
   max-width: 1000px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0;
 }
 
 .article-content {
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 2rem;
-}
-
-.dark-mode .article-content {
-  background-color: #1e1e1e;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .article-title {
@@ -211,36 +203,74 @@ onMounted(() => {
 
 .back-link {
   display: inline-block;
-  background-color: #f0f0f0;
-  color: #333;
+  background-color: #42b883;
+  color: white;
   padding: 0.5rem 1rem;
+  margin: 0 1rem;
   border-radius: 4px;
   text-decoration: none;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(66, 184, 131, 0.2);
+}
+
+.back-link::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
 }
 
 .back-link:hover {
-  background-color: #e0e0e0;
+  background-color: #36a06f;
+  text-decoration: none;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(66, 184, 131, 0.3);
 }
 
-.dark-mode .back-link {
-  background-color: #333;
-  color: #e0e0e0;
-}
-
-.dark-mode .back-link:hover {
-  background-color: #444;
+.back-link:hover::after {
+  width: 300px;
+  height: 300px;
 }
 
 /* 完整 HTML 内容的样式 */
 .html-content {
   width: 100%;
-  min-height: 100vh;
+  min-height: calc(100vh - 120px);
+  overflow: hidden;
 }
 
 .html-content body {
   margin: 0;
   padding: 0;
+}
+
+/* 重置HTML内容中的容器样式，确保与Vue组件一致 */
+.html-content .container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.html-content .article-content {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  margin: 0;
+}
+
+.dark-mode .html-content .article-content {
+  background-color: #1e1e1e;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 /* 确保 HTML 内容中的代码块在深色模式下也能正常显示 */

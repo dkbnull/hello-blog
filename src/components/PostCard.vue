@@ -1,5 +1,5 @@
 <template>
-  <div class="post-card">
+  <div class="post-card card">
     <div class="post-image">
       <img :src="post.image || '/src/assets/favicon.svg'" :alt="post.title"/>
     </div>
@@ -55,29 +55,11 @@ const excerpt = computed(() => {
 
 <style scoped>
 .post-card {
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 1.5rem;
+  @extend .card;
   margin-bottom: 1.5rem;
-  transition: transform 0.3s, box-shadow 0.3s;
   display: flex;
   gap: 1.5rem;
   align-items: flex-start;
-}
-
-.dark-mode .post-card {
-  background-color: #1e1e1e;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.post-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
-
-.dark-mode .post-card:hover {
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .post-image {

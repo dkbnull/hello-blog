@@ -4,16 +4,33 @@
       <h1 class="logo">
         <router-link to="/">Hello Blog</router-link>
       </h1>
-      <nav class="nav">
-        <router-link to="/" class="nav-link">首页</router-link>
-        <router-link to="/about" class="nav-link">关于</router-link>
-      </nav>
+      <div class="header-right">
+        <nav class="nav">
+          <router-link to="/" class="nav-link">首页</router-link>
+          <router-link to="/about" class="nav-link">关于</router-link>
+        </nav>
+        <button class="theme-toggle" @click="toggleTheme" aria-label="切换主题">
+          <span v-if="isDarkMode">🌞</span>
+          <span v-else>🌙</span>
+        </button>
+      </div>
     </div>
   </header>
 </template>
 
 <script setup>
-// 头部导航组件
+import {onMounted, ref} from 'vue';
+import {toggleDarkMode} from '../utils/helpers';
+
+const isDarkMode = ref(false);
+
+const toggleTheme = () => {
+  isDarkMode.value = toggleDarkMode();
+};
+
+onMounted(() => {
+  isDarkMode.value = document.body.classList.contains('dark-mode');
+});
 </script>
 
 <style scoped>
@@ -45,6 +62,12 @@
   text-decoration: none;
 }
 
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
 .nav-link {
   color: white;
   text-decoration: none;
@@ -55,6 +78,21 @@
 }
 
 .nav-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.theme-toggle {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: background 0.3s ease;
+}
+
+.theme-toggle:hover {
   background: rgba(255, 255, 255, 0.1);
 }
 </style>

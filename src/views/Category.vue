@@ -49,17 +49,10 @@ watch(() => route.params.category, (newCategory) => {
   padding: 2rem 0;
 }
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
 .home-content {
   display: flex;
   gap: 2rem;
 }
-
 
 /* 右侧内容区 */
 .content {

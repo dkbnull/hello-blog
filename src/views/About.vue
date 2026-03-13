@@ -1,8 +1,6 @@
 <template>
-  <div class="app-container">
-    <!-- 主要内容区域 -->
-    <div class="about-container">
-      <!-- 右侧内容区域 -->
+  <div class="about">
+    <div class="container">
       <div class="content">
         <h1 class="page-title">Hello Blog</h1>
         <p class="page-subtitle">个人博客 - 用于展示技术文章和分享知识</p>
@@ -14,11 +12,11 @@
             仓库地址
           </h2>
           <div class="repo-links">
-            <a href="https://github.com/dkbnull/hello-blog" target="_blank" class="repo-link">
+            <a href="https://github.com/dkbnull/hello-blog" target="_blank" class="repo-link card">
               <span class="icon">🐙</span>
               <span>GitHub</span>
             </a>
-            <a href="https://gitee.com/dkbnull/hello-blog" target="_blank" class="repo-link">
+            <a href="https://gitee.com/dkbnull/hello-blog" target="_blank" class="repo-link card">
               <span class="icon">🎯</span>
               <span>Gitee</span>
             </a>
@@ -32,11 +30,11 @@
             友链
           </h2>
           <div class="friend-links">
-            <a href="https://www.wbnull.cn" target="_blank" class="friend-link">
+            <a href="https://www.wbnull.cn" target="_blank" class="friend-link card">
               <span class="icon">🏠</span>
               <span>主站</span>
             </a>
-            <a href="https://tool.wbnull.cn" target="_blank" class="friend-link">
+            <a href="https://tool.wbnull.cn" target="_blank" class="friend-link card">
               <span class="icon">🛠️</span>
               <span>工具</span>
             </a>
@@ -51,7 +49,7 @@
           </h2>
           <div class="contact-info">
             <div class="contact-links">
-              <div class="contact-item">
+              <div class="contact-item card">
                 <div class="wechat-qrcode">
                   <img src="../assets/weixin.jpg" alt="微信二维码" class="qrcode-image">
                 </div>
@@ -68,25 +66,13 @@
 </script>
 
 <style scoped>
-.app-container {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+.about {
+  padding: 2rem 0;
 }
 
-/* 主要内容区域 */
-.about-container {
-  display: flex;
-  margin: 0 auto;
-  padding: 2rem;
-  flex: 1;
-  max-width: 1200px;
-  width: 100%;
-}
-
-/* 右侧内容区域样式 */
 .content {
-  flex: 1;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .page-title {
@@ -97,11 +83,19 @@
   font-weight: 700;
 }
 
+.dark-mode .page-title {
+  color: #e0e0e0;
+}
+
 .page-subtitle {
   text-align: center;
   color: #666;
   margin-bottom: 3rem;
   font-size: 1.1rem;
+}
+
+.dark-mode .page-subtitle {
+  color: #999;
 }
 
 .about-section {
@@ -121,6 +115,10 @@
   gap: 0.75rem;
 }
 
+.dark-mode .section-title {
+  color: #e0e0e0;
+}
+
 .section-title .icon {
   font-size: 1.2rem;
 }
@@ -133,23 +131,21 @@
 }
 
 .repo-link {
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 1.5rem;
   text-decoration: none;
   color: #333;
   transition: all 0.3s ease;
-  border: 1px solid #e9ecef;
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   min-width: 150px;
+}
+
+.dark-mode .repo-link {
+  color: #e0e0e0;
 }
 
 .repo-link:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
   border-color: #42b883;
 }
 
@@ -166,23 +162,21 @@
 }
 
 .friend-link {
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 1.5rem;
   text-decoration: none;
   color: #333;
   transition: all 0.3s ease;
-  border: 1px solid #e9ecef;
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   min-width: 150px;
+}
+
+.dark-mode .friend-link {
+  color: #e0e0e0;
 }
 
 .friend-link:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
   border-color: #42b883;
 }
 
@@ -198,6 +192,10 @@
   font-size: 1rem;
 }
 
+.dark-mode .contact-info {
+  color: #999;
+}
+
 .contact-info p {
   margin-bottom: 1.5rem;
 }
@@ -206,25 +204,20 @@
   display: flex;
   gap: 1.5rem;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .contact-item {
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 1.5rem;
-  border: 1px solid #e9ecef;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   min-width: 200px;
   transition: all 0.3s ease;
 }
 
 .contact-item:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
   border-color: #42b883;
 }
 
@@ -246,8 +239,8 @@
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-  .about-container {
-    padding: 1rem;
+  .content {
+    padding: 0 1rem;
   }
 
   .page-title {

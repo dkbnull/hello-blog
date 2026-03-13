@@ -20,13 +20,6 @@
 <script setup>
 import {getArticleCount, getCategories} from '../data/articles';
 
-const props = defineProps({
-  activeCategory: {
-    type: String,
-    default: ''
-  }
-});
-
 const categories = getCategories();
 </script>
 
