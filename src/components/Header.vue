@@ -35,12 +35,14 @@ onMounted(() => {
 
 <style scoped>
 .header {
-  background-color: #333;
-  color: white;
+  background-color: #ffffff;
+  color: #333333;
   padding: 1rem 0;
   position: sticky;
   top: 0;
   z-index: 100;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .container {
@@ -58,8 +60,9 @@ onMounted(() => {
 }
 
 .logo a {
-  color: white;
+  color: #333333;
   text-decoration: none;
+  transition: color 0.3s;
 }
 
 .header-right {
@@ -69,30 +72,57 @@ onMounted(() => {
 }
 
 .nav-link {
-  color: white;
+  color: #333333;
   text-decoration: none;
   margin-left: 2rem;
   padding: 0.5rem 1rem;
   border-radius: 4px;
-  transition: background 0.3s ease;
+  transition: background 0.3s ease, color 0.3s;
 }
 
 .nav-link:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.05);
 }
 
 .theme-toggle {
   background: none;
   border: none;
-  color: white;
+  color: #333333;
   font-size: 1.2rem;
   cursor: pointer;
   padding: 0.5rem;
   border-radius: 50%;
-  transition: background 0.3s ease;
+  transition: background 0.3s ease, color 0.3s;
 }
 
 .theme-toggle:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* 深色模式 */
+.dark-mode .header {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .logo a {
+  color: #e0e0e0;
+}
+
+.dark-mode .nav-link {
+  color: #e0e0e0;
+}
+
+.dark-mode .nav-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .theme-toggle {
+  color: #e0e0e0;
+}
+
+.dark-mode .theme-toggle:hover {
   background: rgba(255, 255, 255, 0.1);
 }
 </style>

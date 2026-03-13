@@ -13,11 +13,13 @@
 
 <style scoped>
 .footer {
-  background-color: #333;
-  color: white;
+  background-color: #ffffff;
+  color: #333333;
   text-align: center;
   padding: 1rem;
   margin-top: auto;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .container {
@@ -31,8 +33,23 @@ p {
 }
 
 .record-link {
-  color: #ffffff;
+  color: #333333;
   text-decoration: none;
   transition: color 0.3s ease;
+}
+
+.record-link:hover {
+  text-decoration: none;
+}
+
+/* 深色模式 */
+.dark-mode .footer {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .record-link {
+  color: #e0e0e0;
 }
 </style>
