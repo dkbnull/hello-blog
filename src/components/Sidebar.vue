@@ -36,7 +36,7 @@ const categories = getCategories();
   width: 220px;
   background: #f8f9fa;
   border-radius: 12px;
-  padding: 1.5rem;
+  padding: 1rem;
   border: 1px solid #e9ecef;
   position: sticky;
   top: 2rem;

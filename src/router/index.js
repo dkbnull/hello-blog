@@ -10,7 +10,11 @@ const routes = [
         name: 'Home',
         component: Home
     },
-
+    {
+        path: '/about',
+        name: 'About',
+        component: About
+    },
     {
         path: '/category/:category',
         name: 'Category',
@@ -20,11 +24,6 @@ const routes = [
         path: '/article/:category/:id',
         name: 'ArticleDetail',
         component: ArticleDetail
-    },
-    {
-        path: '/about',
-        name: 'About',
-        component: About
     }
 ]
 

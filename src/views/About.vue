@@ -1,5 +1,3 @@
-<script setup>
-</script>
 <template>
   <div class="app-container">
     <!-- 主要内容区域 -->
@@ -65,6 +63,9 @@
     </div>
   </div>
 </template>
+
+<script setup>
+</script>
 
 <style scoped>
 .app-container {

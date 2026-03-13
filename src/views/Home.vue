@@ -37,13 +37,12 @@
 <script setup>
 import {computed, onMounted, ref, watch} from 'vue';
 import {useRoute} from 'vue-router';
-import {getAllArticles, getArticlesByCategory, getCategories, getCategoryName} from '../data/articles';
+import {getAllArticles, getArticlesByCategory, getCategoryName} from '../data/articles';
 import PostCard from '../components/PostCard.vue';
 import Sidebar from '../components/Sidebar.vue';
 
 const route = useRoute();
 const searchQuery = ref('');
-const categories = getCategories();
 const selectedCategory = ref('');
 
 // 过滤文章

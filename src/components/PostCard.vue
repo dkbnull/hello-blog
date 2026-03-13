@@ -1,7 +1,7 @@
 <template>
   <div class="post-card">
     <div class="post-image">
-      <img :src="post.image || '/src/assets/logo.svg'" :alt="post.title"/>
+      <img :src="post.image || '/src/assets/favicon.svg'" :alt="post.title"/>
     </div>
     <div class="post-content">
       <h2 class="post-title">
@@ -41,7 +41,6 @@ const getPostLink = computed(() => {
     return `/article/${props.post.category}/${props.post.id}`;
   }
 });
-
 
 // 提取文章摘要
 const excerpt = computed(() => {

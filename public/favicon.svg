@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+    <!-- 背景圆形 -->
+    <circle cx="16" cy="16" r="15" fill="#42b883"/>
+    <!-- 字母B图标 -->
+    <path d="M12 8H17V24H12V8Z" fill="white"/>
+    <!-- 上部半圆 -->
+    <path d="M17 8C19.21 8 21 9.79 21 12C21 14.21 19.21 16 17 16V8Z" fill="white"/>
+    <!-- 下部半圆 -->
+    <path d="M17 16C19.21 16 21 17.79 21 20C21 22.21 19.21 24 17 24V16Z" fill="white"/>
+</svg>
