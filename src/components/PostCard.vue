@@ -65,7 +65,7 @@ const excerpt = computed(() => {
 .post-image {
   flex-shrink: 0;
   width: 200px;
-  height: 150px;
+  height: 200px;
   border-radius: 8px;
   overflow: hidden;
 }
