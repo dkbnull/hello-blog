@@ -140,13 +140,5 @@ onMounted(() => {
   .home-content {
     flex-direction: column;
   }
-
-  .sidebar {
-    width: 100%;
-  }
-
-  .sidebar-section {
-    margin-bottom: 1rem;
-  }
 }
 </style>

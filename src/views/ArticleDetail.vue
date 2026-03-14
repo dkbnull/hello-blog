@@ -176,26 +176,6 @@ onMounted(() => {
   background-color: #333;
 }
 
-/* 代码块样式 */
-.code-block {
-  position: relative;
-}
-
-.code-block::before {
-  content: attr(data-language);
-  position: absolute;
-  top: 0;
-  right: 0;
-  background-color: rgba(0, 0, 0, 0.1);
-  padding: 0.25rem 0.5rem;
-  font-size: 0.75rem;
-  border-bottom-left-radius: 4px;
-}
-
-.dark-mode .code-block::before {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
 .article-body pre code {
   background-color: transparent;
   padding: 0;
@@ -206,7 +186,7 @@ onMounted(() => {
   background-color: #42b883;
   color: white;
   padding: 0.5rem 1rem;
-  margin: 0 1rem;
+  margin: 1rem;
   border-radius: 4px;
   text-decoration: none;
   transition: all 0.3s ease;

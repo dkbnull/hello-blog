@@ -8,17 +8,16 @@
 </template>
 
 <script setup>
-// 页脚组件
 </script>
 
 <style scoped>
 .footer {
-  background-color: #ffffff;
+  background-color: #f5f5f5;
   color: #333333;
   text-align: center;
   padding: 1rem;
   margin-top: auto;
-  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+  border-top: 1px solid #e0e0e0;
   transition: background-color 0.3s, color 0.3s;
 }
 

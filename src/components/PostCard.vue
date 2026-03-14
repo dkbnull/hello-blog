@@ -1,7 +1,7 @@
 <template>
   <div class="post-card card">
     <div class="post-image">
-      <img :src="post.image || '/src/assets/favicon.svg'" :alt="post.title"/>
+      <img :src="post.image || '/src/assets/default.svg'" :alt="post.title"/>
     </div>
     <div class="post-content">
       <h2 class="post-title">

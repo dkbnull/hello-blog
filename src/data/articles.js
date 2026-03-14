@@ -67,11 +67,8 @@ export const getArticleContent = async (categoryId, articleId) => {
             return errorContent;
         }
 
-        // 构建文件名（移除特殊字符，替换空格为下划线）
-        const htmlFileName = `${articleId}_${article.title}.html`;
-        const mdFileName = `${articleId}_${article.title}.md`;
-
         // 尝试加载 HTML 文件
+        const htmlFileName = `${articleId}_${article.title}.html`;
         const htmlPath = new URL(`./articles/${categoryId}/${htmlFileName}`, import.meta.url).href;
         const htmlResponse = await fetch(htmlPath);
         if (htmlResponse.ok) {
@@ -81,6 +78,7 @@ export const getArticleContent = async (categoryId, articleId) => {
         }
 
         // 如果 HTML 文件不存在，尝试加载 Markdown 文件
+        const mdFileName = `${articleId}_${article.title}.md`;
         const mdPath = new URL(`./articles/${categoryId}/${mdFileName}`, import.meta.url).href;
         const mdResponse = await fetch(mdPath);
         if (mdResponse.ok) {

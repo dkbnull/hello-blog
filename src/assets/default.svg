@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="150" viewBox="0 0 200 150">
+    <!-- 背景 -->
+    <rect width="200" height="150" fill="#f8f9fa" rx="8" ry="8"/>
+    <!-- 默认图标 - 通用符号 -->
+    <rect x="60" y="40" width="80" height="70" fill="#6c757d" rx="4" ry="4"/>
+    <!-- 通用符号 - 圆圈和三角形 -->
+    <circle cx="100" cy="65" r="15" fill="#adb5bd"/>
+    <polygon points="100,95 85,115 115,115" fill="#adb5bd"/>
+</svg>
