@@ -72,7 +72,9 @@ export const getArticleContent = async (categoryId, articleId) => {
         const htmlPath = new URL(`./articles/${categoryId}/${htmlFileName}`, import.meta.url).href;
         const htmlResponse = await fetch(htmlPath);
         if (htmlResponse.ok) {
-            const content = await htmlResponse.text();
+            let content = await htmlResponse.text();
+            // 处理图片路径，将相对路径转换为绝对路径
+            content = content.replace(/src='\.\/assets\//g, `src='/src/data/articles/${categoryId}/assets/`);
             articleContentCache.set(cacheKey, content);
             return content;
         }
