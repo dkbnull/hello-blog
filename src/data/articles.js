@@ -75,7 +75,7 @@ export const getArticleContent = async (categoryId, articleId) => {
             let content = await htmlResponse.text();
             // 处理图片路径，将相对路径转换为绝对路径
             const imageBaseUrl = import.meta.env.VITE_IMAGE_BASE_URL
-                ? `${import.meta.env.VITE_IMAGE_BASE_URL}/assets/articles/${categoryId}/assets/`
+                ? `${import.meta.env.VITE_IMAGE_BASE_URL}/articles/${categoryId}/assets/`
                 : `/src/data/articles/${categoryId}/assets/`;
             content = content.replace(/src='\.\/assets\//g, `src='${imageBaseUrl}`);
             articleContentCache.set(cacheKey, content);
