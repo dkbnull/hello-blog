@@ -45,6 +45,33 @@ export const getArticleById = (categoryId, articleId) => {
 // 缓存文章内容
 const articleContentCache = new Map();
 
+// 构建文章文件路径
+const buildArticlePath = (categoryId, articleId, title, extension) => {
+    const fileName = `${articleId}_${title}.${extension}`;
+
+    if (import.meta.env.VITE_IMAGE_BASE_URL) {
+        return `${import.meta.env.VITE_IMAGE_BASE_URL}/articles/${categoryId}/${fileName}`;
+    }
+
+    // 本地开发，使用相对路径
+    return new URL(`./articles/${categoryId}/${fileName}`, import.meta.url).href;
+};
+
+// 构建图片基础路径
+const buildImageBaseUrl = (categoryId) => {
+    return import.meta.env.VITE_IMAGE_BASE_URL
+        ? `${import.meta.env.VITE_IMAGE_BASE_URL}/articles/${categoryId}/assets/`
+        : `/src/data/articles/${categoryId}/assets/`;
+};
+
+// 生成错误内容
+const generateErrorContent = (title, message) => `
+    <div class="article-content">
+        <h1>${title || '文章不存在'}</h1>
+        <p>${message}</p>
+    </div>
+`;
+
 // 读取文章内容
 export const getArticleContent = async (categoryId, articleId) => {
     // 检查缓存
@@ -54,37 +81,28 @@ export const getArticleContent = async (categoryId, articleId) => {
     }
 
     try {
-        // 尝试加载 HTML 文件
+        // 获取文章信息
         const article = getArticleById(categoryId, articleId);
         if (!article) {
-            const errorContent = `
-                <div class="article-content">
-                    <h1>文章不存在</h1>
-                    <p>找不到指定的文章，请检查链接是否正确。</p>
-                </div>
-            `;
+            const errorContent = generateErrorContent(null, '找不到指定的文章，请检查链接是否正确。');
             articleContentCache.set(cacheKey, errorContent);
             return errorContent;
         }
 
         // 尝试加载 HTML 文件
-        const htmlFileName = `${articleId}_${article.title}.html`;
-        const htmlPath = new URL(`./articles/${categoryId}/${htmlFileName}`, import.meta.url).href;
+        const htmlPath = buildArticlePath(categoryId, articleId, article.title, 'html');
         const htmlResponse = await fetch(htmlPath);
         if (htmlResponse.ok) {
             let content = await htmlResponse.text();
             // 处理图片路径，将相对路径转换为绝对路径
-            const imageBaseUrl = import.meta.env.VITE_IMAGE_BASE_URL
-                ? `${import.meta.env.VITE_IMAGE_BASE_URL}/articles/${categoryId}/assets/`
-                : `/src/data/articles/${categoryId}/assets/`;
+            const imageBaseUrl = buildImageBaseUrl(categoryId);
             content = content.replace(/src='\.\/assets\//g, `src='${imageBaseUrl}`);
             articleContentCache.set(cacheKey, content);
             return content;
         }
 
         // 如果 HTML 文件不存在，尝试加载 Markdown 文件
-        const mdFileName = `${articleId}_${article.title}.md`;
-        const mdPath = new URL(`./articles/${categoryId}/${mdFileName}`, import.meta.url).href;
+        const mdPath = buildArticlePath(categoryId, articleId, article.title, 'md');
         const mdResponse = await fetch(mdPath);
         if (mdResponse.ok) {
             const mdContent = await mdResponse.text();
@@ -96,22 +114,13 @@ export const getArticleContent = async (categoryId, articleId) => {
         }
 
         // 如果都不存在，返回默认内容
-        const defaultContent = `
-            <div class="article-content">
-                <h1>${article.title}</h1>
-                <p>文章内容加载失败，请检查文件是否存在。</p>
-            </div>
-        `;
+        const defaultContent = generateErrorContent(article.title, '文章内容加载失败，请检查文件是否存在。');
         articleContentCache.set(cacheKey, defaultContent);
         return defaultContent;
     } catch (error) {
         console.error('加载文章内容失败:', error);
-        const errorContent = `
-            <div class="article-content">
-                <h1>${getArticleById(categoryId, articleId)?.title || '文章不存在'}</h1>
-                <p>文章内容加载失败: ${error.message}</p>
-            </div>
-        `;
+        const article = getArticleById(categoryId, articleId);
+        const errorContent = generateErrorContent(article?.title, `文章内容加载失败: ${error.message}`);
         articleContentCache.set(cacheKey, errorContent);
         return errorContent;
     }
