@@ -1,16 +1,19 @@
 <template>
   <div class="article-detail">
-    <div class="container">
+    <div class="container article-container">
       <div v-if="isHtmlContent" class="html-content" v-html="articleContent"></div>
-      <div v-else class="article-content card">
+      <article v-else class="article-content card">
         <h1 class="article-title">{{ article?.title }}</h1>
         <div class="article-meta">
-          <span class="article-date">{{ article?.date }}</span>
-          <span class="article-category">{{ getCategoryName(article?.category) }}</span>
+          <span>{{ article?.date }}</span>
+          <span class="meta-separator">·</span>
+          <router-link :to="`/category/${article?.category}`" class="meta-category">
+            {{ getCategoryName(article?.category) }}
+          </router-link>
         </div>
         <div class="article-body" v-html="articleContent"></div>
-      </div>
-      <router-link to="/" class="back-link btn btn-secondary">返回首页</router-link>
+      </article>
+      <router-link to="/" class="back-link">← 返回首页</router-link>
     </div>
   </div>
 </template>
@@ -22,249 +25,222 @@ import {getArticleById, getArticleContent, getCategoryName} from '../data/articl
 
 const route = useRoute();
 
-// 使用响应式数据
 const categoryId = ref(route.params.category);
 const articleId = ref(route.params.id);
 
-// 文章对象（使用计算属性）
-const article = computed(() => {
-  return getArticleById(categoryId.value, articleId.value);
-});
+const article = computed(() => getArticleById(categoryId.value, articleId.value));
 
-// 获取文章内容
 const articleContent = ref('');
 const isHtmlContent = ref(false);
 
-// 加载文章内容
 const loadArticleContent = async () => {
   try {
-    // 调用异步函数加载文章内容
     const content = await getArticleContent(categoryId.value, articleId.value);
-
-    // 检测是否是完整的 HTML 内容
     isHtmlContent.value = content.startsWith('<!DOCTYPE html>') || content.startsWith('<html');
     articleContent.value = content;
   } catch (error) {
     console.error('加载文章内容失败:', error);
-    articleContent.value = `
-      <div class="article-content">
-        <h1>${article.value?.title}</h1>
-        <p>文章内容加载失败: ${error.message}</p>
-      </div>
-    `;
+    articleContent.value = `<h1>${article.value?.title || '文章不存在'}</h1><p>文章内容加载失败: ${error.message}</p>`;
     isHtmlContent.value = false;
   }
 };
 
-// 动态设置页面标题
-const updateMetaTags = () => {
+const updatePageTitle = () => {
   if (article.value) {
-    document.title = `${article.value.title} | 个人博客`;
+    document.title = `${article.value.title} | Hello Blog`;
   }
 };
 
-// 监听路由变化，更新文章内容
-watch([() => route.params.category, () => route.params.id], ([newCategory, newId]) => {
-  categoryId.value = newCategory;
-  articleId.value = newId;
-  loadArticleContent();
-  updateMetaTags();
-});
+watch(
+    [() => route.params.category, () => route.params.id],
+    ([newCategory, newId]) => {
+      categoryId.value = newCategory;
+      articleId.value = newId;
+      loadArticleContent();
+      updatePageTitle();
+    }
+);
 
-// 初始化
 onMounted(() => {
   loadArticleContent();
-  updateMetaTags();
+  updatePageTitle();
 });
 </script>
 
 <style scoped>
 .article-detail {
-  padding: 2rem 0;
+  padding: var(--spacing-xl) 0;
 }
 
-.container {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 0;
+.article-container {
+  max-width: var(--article-max);
 }
 
 .article-content {
-  padding: 2rem;
+  padding: var(--spacing-xl);
 }
 
 .article-title {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-  color: #333;
+  font-size: 2rem;
+  margin-bottom: var(--spacing-md);
+  color: var(--color-text);
   text-align: center;
-}
-
-.dark-mode .article-title {
-  color: #e0e0e0;
 }
 
 .article-meta {
   font-size: 0.875rem;
-  color: #666;
-  margin-bottom: 2rem;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-xl);
   display: flex;
   justify-content: center;
-  gap: 1rem;
+  gap: var(--spacing-sm);
 }
 
-.dark-mode .article-meta {
-  color: #999;
+.meta-separator {
+  color: var(--color-text-tertiary);
+}
+
+.meta-category {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.meta-category:hover {
+  text-decoration: underline;
 }
 
 .article-body {
-  margin-bottom: 1rem;
   line-height: 1.8;
-  color: #333;
+  color: var(--color-text);
 }
 
-.dark-mode .article-body {
-  color: #e0e0e0;
+.article-body :deep(h1),
+.article-body :deep(h2),
+.article-body :deep(h3),
+.article-body :deep(h4),
+.article-body :deep(h5),
+.article-body :deep(h6) {
+  margin-top: var(--spacing-xl);
+  margin-bottom: var(--spacing-md);
+  color: var(--color-text);
 }
 
-.article-body h1,
-.article-body h2,
-.article-body h3,
-.article-body h4,
-.article-body h5,
-.article-body h6 {
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-  color: #333;
+.article-body :deep(p) {
+  margin-bottom: var(--spacing-md);
 }
 
-.dark-mode .article-body h1,
-.dark-mode .article-body h2,
-.dark-mode .article-body h3,
-.dark-mode .article-body h4,
-.dark-mode .article-body h5,
-.dark-mode .article-body h6 {
-  color: #e0e0e0;
+.article-body :deep(code) {
+  background-color: var(--color-bg-code);
+  padding: 0.2em 0.4em;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.9em;
 }
 
-.article-body p {
-  margin-bottom: 1rem;
-}
-
-.article-body code {
-  background-color: #f0f0f0;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-family: 'Courier New', Courier, monospace;
-}
-
-.dark-mode .article-body code {
-  background-color: #333;
-  color: #e0e0e0;
-}
-
-.article-body pre {
-  background-color: #f0f0f0;
-  padding: 1rem;
-  border-radius: 4px;
+.article-body :deep(pre) {
+  background-color: var(--color-bg-code);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-sm);
   overflow-x: auto;
-  margin-bottom: 1rem;
-  font-family: 'Courier New', Courier, monospace;
+  margin-bottom: var(--spacing-md);
+  font-family: var(--font-mono);
 }
 
-.dark-mode .article-body pre {
-  background-color: #333;
-}
-
-.article-body pre code {
+.article-body :deep(pre code) {
   background-color: transparent;
   padding: 0;
 }
 
-.back-link {
-  display: inline-block;
-  background-color: #42b883;
-  color: white;
-  padding: 0.5rem 1rem;
-  margin: 1rem;
-  border-radius: 4px;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  font-weight: 500;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 2px 4px rgba(66, 184, 131, 0.2);
+.article-body :deep(img) {
+  max-width: 100%;
+  border-radius: var(--radius-sm);
 }
 
-.back-link::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  transition: width 0.6s, height 0.6s;
+.article-body :deep(blockquote) {
+  border-left: 4px solid var(--color-primary);
+  padding-left: var(--spacing-md);
+  margin: var(--spacing-md) 0;
+  color: var(--color-text-secondary);
+}
+
+.article-body :deep(table) {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: var(--spacing-md);
+}
+
+.article-body :deep(th),
+.article-body :deep(td) {
+  border: 1px solid var(--color-border);
+  padding: var(--spacing-sm) var(--spacing-md);
+  text-align: left;
+}
+
+.article-body :deep(th) {
+  background-color: var(--color-bg-code);
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  background-color: var(--color-primary);
+  color: white;
+  padding: var(--spacing-sm) var(--spacing-md);
+  margin: var(--spacing-md) 0;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background-color var(--transition-normal);
 }
 
 .back-link:hover {
-  background-color: #36a06f;
+  background-color: var(--color-primary-hover);
   text-decoration: none;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(66, 184, 131, 0.3);
 }
 
-.back-link:hover::after {
-  width: 300px;
-  height: 300px;
-}
-
-/* 完整 HTML 内容的样式 */
 .html-content {
   width: 100%;
   min-height: calc(100vh - 120px);
   overflow: hidden;
+  color: var(--color-text);
 }
 
-.html-content body {
-  margin: 0;
-  padding: 0;
-}
-
-/* 重置HTML内容中的容器样式，确保与Vue组件一致 */
-.html-content .container {
-  max-width: 1000px;
+.html-content :deep(.container) {
+  max-width: var(--article-max);
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 var(--spacing-md);
 }
 
-.html-content .article-content {
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 2rem;
-  margin: 0;
+.html-content :deep(.article-content) {
+  background-color: var(--color-bg-card);
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 4px var(--color-shadow);
+  padding: var(--spacing-xl);
 }
 
-.dark-mode .html-content .article-content {
-  background-color: #1e1e1e;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+.html-content :deep(code) {
+  background-color: var(--color-bg-code);
+  padding: 0.2em 0.4em;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
 }
 
-/* 确保 HTML 内容中的代码块在深色模式下也能正常显示 */
-.dark-mode .html-content {
-  background-color: #121212;
-  color: #e0e0e0;
+.html-content :deep(pre) {
+  background-color: var(--color-bg-code);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
 }
 
-.dark-mode .html-content code {
-  background-color: #333;
-  color: #e0e0e0;
-}
+@media (max-width: 768px) {
+  .article-content {
+    padding: var(--spacing-md);
+  }
 
-.dark-mode .html-content pre {
-  background-color: #333;
+  .article-title {
+    font-size: 1.5rem;
+  }
 }
 </style>

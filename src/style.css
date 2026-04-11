@@ -1,4 +1,74 @@
-/* 全局样式 */
+:root {
+    --color-primary: #42b883;
+    --color-primary-hover: #36a06f;
+    --color-primary-light: rgba(66, 184, 131, 0.1);
+    --color-primary-glow: rgba(66, 184, 131, 0.2);
+
+    --color-bg: #f5f5f5;
+    --color-bg-card: #ffffff;
+    --color-bg-sidebar: #f8f9fa;
+    --color-bg-code: #f0f0f0;
+    --color-bg-hover: rgba(0, 0, 0, 0.05);
+    --color-bg-tag: #f0f0f0;
+    --color-bg-footer: #f5f5f5;
+
+    --color-text: #333333;
+    --color-text-secondary: #666666;
+    --color-text-tertiary: #999999;
+    --color-text-link: #42b883;
+
+    --color-border: #e0e0e0;
+    --color-border-sidebar: #e9ecef;
+
+    --color-shadow: rgba(0, 0, 0, 0.1);
+    --color-shadow-dark: rgba(0, 0, 0, 0.3);
+
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-pill: 1rem;
+
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 3rem;
+
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    --font-mono: 'Courier New', Courier, monospace;
+
+    --header-height: 60px;
+    --sidebar-width: 220px;
+    --container-max: 1200px;
+    --content-max: 800px;
+    --article-max: 1000px;
+
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+}
+
+.dark-mode {
+    --color-bg: #121212;
+    --color-bg-card: #1e1e1e;
+    --color-bg-sidebar: #1e1e1e;
+    --color-bg-code: #333333;
+    --color-bg-hover: rgba(255, 255, 255, 0.1);
+    --color-bg-tag: #333333;
+    --color-bg-footer: #1e1e1e;
+
+    --color-text: #e0e0e0;
+    --color-text-secondary: #999999;
+    --color-text-tertiary: #777777;
+    --color-text-link: #42b883;
+
+    --color-border: #333333;
+    --color-border-sidebar: #333333;
+
+    --color-shadow: rgba(0, 0, 0, 0.3);
+    --color-shadow-dark: rgba(0, 0, 0, 0.5);
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -6,111 +76,78 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-family: var(--font-sans);
     line-height: 1.6;
-    color: #333;
-    background-color: #f5f5f5;
-    transition: background-color 0.3s, color 0.3s;
+    color: var(--color-text);
+    background-color: var(--color-bg);
+    transition: background-color var(--transition-normal), color var(--transition-normal);
 }
 
-/* 深色模式 */
-.dark-mode {
-    background-color: #121212;
-    color: #e0e0e0;
-}
-
-.dark-mode a {
-    color: #42b883;
-}
-
-/* 容器样式 */
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-}
-
-/* 链接样式 */
 a {
-    color: #42b883;
+    color: var(--color-text-link);
     text-decoration: none;
-    transition: color 0.3s;
+    transition: color var(--transition-normal);
 }
 
 a:hover {
     text-decoration: underline;
 }
 
-/* 按钮样式 */
+.container {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 var(--spacing-md);
+}
+
 .btn {
     display: inline-block;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-sm);
     text-decoration: none;
-    transition: background-color 0.3s, color 0.3s;
+    transition: background-color var(--transition-normal), color var(--transition-normal);
     border: none;
     cursor: pointer;
 }
 
 .btn-primary {
-    background-color: #42b883;
+    background-color: var(--color-primary);
     color: white;
 }
 
 .btn-primary:hover {
-    background-color: #36a06f;
+    background-color: var(--color-primary-hover);
     text-decoration: none;
 }
 
 .btn-secondary {
-    background-color: #f0f0f0;
-    color: #333;
+    background-color: var(--color-bg-tag);
+    color: var(--color-text);
 }
 
 .btn-secondary:hover {
-    background-color: #e0e0e0;
+    background-color: var(--color-border);
     text-decoration: none;
 }
 
-.dark-mode .btn-secondary {
-    background-color: #333;
-    color: #e0e0e0;
-}
-
-.dark-mode .btn-secondary:hover {
-    background-color: #444;
-}
-
-/* 卡片样式 */
 .card {
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 1.5rem;
-    transition: transform 0.3s, box-shadow 0.3s;
+    background-color: var(--color-bg-card);
+    border-radius: var(--radius-md);
+    box-shadow: 0 2px 4px var(--color-shadow);
+    padding: var(--spacing-lg);
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
 }
 
 .card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 15px var(--color-shadow);
 }
 
-.dark-mode .card {
-    background-color: #1e1e1e;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.dark-mode .card:hover {
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-}
-
-/* 响应式设计 */
 @media (max-width: 768px) {
     .container {
         padding: 0 0.75rem;
     }
 
     .card {
-        padding: 1rem;
+        padding: var(--spacing-md);
     }
 }

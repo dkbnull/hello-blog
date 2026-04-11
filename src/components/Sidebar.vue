@@ -9,8 +9,8 @@
             :class="{ active: activeCategory === category.id }"
         >
           <span class="icon">{{ category.icon }}</span>
-          <span>{{ category.name }}</span>
-          <span class="category-count">({{ getArticleCount(category.id) }})</span>
+          <span class="name">{{ category.name }}</span>
+          <span class="count">{{ getArticleCount(category.id) }}</span>
         </router-link>
       </li>
     </ul>
@@ -31,41 +31,26 @@ const categories = getCategories();
 </script>
 
 <style scoped>
-/* 左侧导航栏 */
 .sidebar {
-  width: 220px;
-  background: #f8f9fa;
-  border-radius: 12px;
-  padding: 1rem;
-  border: 1px solid #e9ecef;
+  width: var(--sidebar-width);
+  background: var(--color-bg-sidebar);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md);
+  border: 1px solid var(--color-border-sidebar);
   position: sticky;
-  top: 2rem;
+  top: calc(var(--header-height) + var(--spacing-md));
   align-self: flex-start;
   height: fit-content;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-}
-
-.dark-mode .sidebar {
-  background: #1e1e1e;
-  border-color: #333;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 10px var(--color-shadow);
+  transition: background-color var(--transition-normal), border-color var(--transition-normal);
 }
 
 .sidebar-title {
-  color: #42b883;
+  color: var(--color-primary);
   margin-top: 0;
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--spacing-lg);
   font-size: 1.2rem;
   font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
-.dark-mode .sidebar-title {
-  color: #42b883;
 }
 
 .sidebar-menu {
@@ -75,38 +60,30 @@ const categories = getCategories();
 }
 
 .sidebar-menu li {
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--spacing-xs);
 }
 
 .sidebar-link {
   text-decoration: none;
-  color: #333;
-  transition: all 0.3s ease;
+  color: var(--color-text);
+  transition: all var(--transition-normal);
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
+  padding: 0.75rem var(--spacing-md);
+  border-radius: var(--radius-md);
   font-size: 0.95rem;
 }
 
-.dark-mode .sidebar-link {
-  color: #e0e0e0;
-}
-
 .sidebar-link:hover {
-  background: #e8f5e8;
-  color: #42b883;
-  transform: translateX(5px);
-}
-
-.dark-mode .sidebar-link:hover {
-  background: rgba(66, 184, 131, 0.1);
-  color: #42b883;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  transform: translateX(4px);
+  text-decoration: none;
 }
 
 .sidebar-link.active {
-  background: #42b883;
+  background: var(--color-primary);
   color: white;
   font-weight: 500;
 }
@@ -117,48 +94,35 @@ const categories = getCategories();
   text-align: center;
 }
 
-.category-count {
+.count {
   margin-left: auto;
   font-size: 0.8rem;
-  color: #666;
+  color: var(--color-text-tertiary);
 }
 
-.dark-mode .category-count {
-  color: #999;
-}
-
-.sidebar-link.active .category-count {
+.sidebar-link.active .count {
   color: rgba(255, 255, 255, 0.8);
 }
 
-/* 响应式设计 */
 @media (max-width: 768px) {
   .sidebar {
     width: 100%;
     position: static;
-    padding: 1rem;
   }
 
   .sidebar-menu {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: var(--spacing-sm);
   }
 
   .sidebar-menu li {
     margin-bottom: 0;
-    flex: 1 1 calc(50% - 0.5rem);
   }
 
   .sidebar-link {
-    padding: 0.5rem;
+    padding: var(--spacing-sm);
     font-size: 0.85rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .sidebar-menu li {
-    flex: 1 1 100%;
   }
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <header class="header">
-    <div class="container">
+    <div class="container header-inner">
       <h1 class="logo">
         <router-link to="/">Hello Blog</router-link>
       </h1>
@@ -9,9 +9,23 @@
           <router-link to="/" class="nav-link">首页</router-link>
           <router-link to="/about" class="nav-link">关于</router-link>
         </nav>
-        <button class="theme-toggle" @click="toggleTheme" aria-label="切换主题">
-          <span v-if="isDarkMode">🌞</span>
-          <span v-else>🌙</span>
+        <button class="theme-toggle" @click="toggleTheme" :aria-label="isDarkMode ? '切换浅色模式' : '切换深色模式'">
+          <svg v-if="isDarkMode" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/>
+            <line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+          <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
         </button>
       </div>
     </div>
@@ -35,20 +49,17 @@ onMounted(() => {
 
 <style scoped>
 .header {
-  background-color: #ffffff;
-  color: #333333;
-  padding: 1rem 0;
+  background-color: var(--color-bg-card);
+  color: var(--color-text);
+  padding: var(--spacing-md) 0;
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s, color 0.3s;
+  box-shadow: 0 2px 4px var(--color-shadow);
+  transition: background-color var(--transition-normal), color var(--transition-normal);
 }
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
+.header-inner {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -57,72 +68,58 @@ onMounted(() => {
 .logo {
   margin: 0;
   font-size: 1.5rem;
+  font-weight: 700;
 }
 
 .logo a {
-  color: #333333;
+  color: var(--color-text);
   text-decoration: none;
-  transition: color 0.3s;
+  transition: color var(--transition-normal);
+}
+
+.logo a:hover {
+  color: var(--color-primary);
 }
 
 .header-right {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: var(--spacing-lg);
 }
 
 .nav-link {
-  color: #333333;
+  color: var(--color-text);
   text-decoration: none;
-  margin-left: 2rem;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  transition: background 0.3s ease, color 0.3s;
+  margin-left: var(--spacing-lg);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-normal), color var(--transition-normal);
 }
 
 .nav-link:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: var(--color-bg-hover);
+  text-decoration: none;
+}
+
+.nav-link.router-link-exact-active {
+  color: var(--color-primary);
+  font-weight: 500;
 }
 
 .theme-toggle {
   background: none;
   border: none;
-  color: #333333;
-  font-size: 1.2rem;
+  color: var(--color-text);
   cursor: pointer;
-  padding: 0.5rem;
+  padding: var(--spacing-sm);
   border-radius: 50%;
-  transition: background 0.3s ease, color 0.3s;
+  transition: background var(--transition-normal), color var(--transition-normal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .theme-toggle:hover {
-  background: rgba(0, 0, 0, 0.05);
-}
-
-/* 深色模式 */
-.dark-mode .header {
-  background-color: #1e1e1e;
-  color: #e0e0e0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.dark-mode .logo a {
-  color: #e0e0e0;
-}
-
-.dark-mode .nav-link {
-  color: #e0e0e0;
-}
-
-.dark-mode .nav-link:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.dark-mode .theme-toggle {
-  color: #e0e0e0;
-}
-
-.dark-mode .theme-toggle:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--color-bg-hover);
 }
 </style>

@@ -1,31 +1,32 @@
 <template>
-  <div class="post-card card">
+  <article class="post-card card">
     <div class="post-image">
-      <img :src="post.image || '/src/assets/default.svg'" :alt="post.title"/>
+      <img :src="post.image || defaultImage" :alt="post.title"/>
     </div>
     <div class="post-content">
       <h2 class="post-title">
-        <router-link :to="getPostLink">{{ post.title }}</router-link>
+        <router-link :to="postLink">{{ post.title }}</router-link>
       </h2>
       <div class="post-meta">
-        <span class="post-date">{{ post.date }}</span>
-        <span v-if="post.author" class="post-author">作者: {{ post.author }}</span>
-        <span class="post-category">
-          <router-link :to="`/category/${post.category}`">{{ getCategoryName(post.category) }}</router-link>
-        </span>
+        <span class="meta-date">{{ post.date }}</span>
+        <span v-if="post.author" class="meta-author">{{ post.author }}</span>
+        <router-link :to="`/category/${post.category}`" class="meta-category">
+          {{ getCategoryName(post.category) }}
+        </router-link>
       </div>
-      <div class="post-excerpt" v-html="excerpt"></div>
-      <div class="post-tags" v-if="post.tags && post.tags.length > 0">
+      <p class="post-excerpt">{{ excerpt }}</p>
+      <div class="post-tags" v-if="post.tags?.length">
         <span v-for="tag in post.tags" :key="tag" class="tag">{{ tag }}</span>
       </div>
-      <router-link :to="getPostLink" class="read-more">阅读更多</router-link>
+      <router-link :to="postLink" class="read-more">阅读更多 →</router-link>
     </div>
-  </div>
+  </article>
 </template>
 
 <script setup>
 import {computed} from 'vue';
 import {getCategoryName} from '../data/articles';
+import defaultImage from '../assets/default.svg';
 
 const props = defineProps({
   post: {
@@ -34,31 +35,23 @@ const props = defineProps({
   }
 });
 
-// 获取文章链接
-const getPostLink = computed(() => {
-  // 检查是否是来自 articles 目录的文章
-  if (props.post.id && props.post.category) {
-    return `/article/${props.post.category}/${props.post.id}`;
-  }
-});
+const postLink = computed(() => `/article/${props.post.category}/${props.post.id}`);
 
-// 提取文章摘要
 const excerpt = computed(() => {
-  if (props.post.content) {
-    // 提取文章摘要，去除 Markdown 标记
-    const plainText = props.post.content.replace(/#{1,6}\s/g, '').replace(/```[\s\S]*?```/g, '').replace(/\n/g, ' ');
-    return plainText.length > 150 ? plainText.substring(0, 150) + '...' : plainText;
-  }
-  return '点击查看文章内容...';
+  if (!props.post.content) return '点击查看文章内容...';
+  const plainText = props.post.content
+      .replace(/#{1,6}\s/g, '')
+      .replace(/```[\s\S]*?```/g, '')
+      .replace(/\n/g, ' ');
+  return plainText.length > 150 ? plainText.substring(0, 150) + '...' : plainText;
 });
 </script>
 
 <style scoped>
 .post-card {
-  @extend .card;
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--spacing-lg);
   display: flex;
-  gap: 1.5rem;
+  gap: var(--spacing-lg);
   align-items: flex-start;
 }
 
@@ -66,7 +59,7 @@ const excerpt = computed(() => {
   flex-shrink: 0;
   width: 200px;
   height: 200px;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   overflow: hidden;
 }
 
@@ -78,86 +71,93 @@ const excerpt = computed(() => {
 
 .post-content {
   flex: 1;
+  min-width: 0;
 }
 
 .post-title {
   margin-top: 0;
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--spacing-sm);
+  font-size: 1.25rem;
 }
 
 .post-title a {
-  color: #333;
+  color: var(--color-text);
   text-decoration: none;
-  transition: color 0.3s;
-}
-
-.dark-mode .post-title a {
-  color: #e0e0e0;
+  transition: color var(--transition-normal);
 }
 
 .post-title a:hover {
-  color: #42b883;
+  color: var(--color-primary);
 }
 
 .post-meta {
   font-size: 0.875rem;
-  color: #666;
-  margin-bottom: 1rem;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-md);
   display: flex;
-  gap: 1rem;
+  gap: var(--spacing-md);
   flex-wrap: wrap;
 }
 
-.dark-mode .post-meta {
-  color: #999;
-}
-
-.post-category a {
-  color: #42b883;
+.meta-category {
+  color: var(--color-primary);
   text-decoration: none;
 }
 
-.post-excerpt {
-  margin-bottom: 1rem;
-  color: #333;
-  line-height: 1.5;
+.meta-category:hover {
+  text-decoration: underline;
 }
 
-.dark-mode .post-excerpt {
-  color: #e0e0e0;
+.post-excerpt {
+  margin-bottom: var(--spacing-md);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .post-tags {
-  margin-bottom: 1rem;
+  margin-bottom: var(--spacing-md);
   display: flex;
-  gap: 0.5rem;
+  gap: var(--spacing-sm);
   flex-wrap: wrap;
 }
 
 .tag {
-  background-color: #f0f0f0;
-  padding: 0.25rem 0.75rem;
-  border-radius: 1rem;
+  background-color: var(--color-bg-tag);
+  padding: var(--spacing-xs) 0.75rem;
+  border-radius: var(--radius-pill);
   font-size: 0.75rem;
-  color: #666;
-}
-
-.dark-mode .tag {
-  background-color: #333;
-  color: #e0e0e0;
+  color: var(--color-text-secondary);
+  transition: background-color var(--transition-normal);
 }
 
 .read-more {
   display: inline-block;
-  background-color: #42b883;
+  background-color: var(--color-primary);
   color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-sm);
   text-decoration: none;
-  transition: background-color 0.3s;
+  font-size: 0.875rem;
+  transition: background-color var(--transition-normal);
 }
 
 .read-more:hover {
-  background-color: #36a06f;
+  background-color: var(--color-primary-hover);
+  text-decoration: none;
+}
+
+@media (max-width: 768px) {
+  .post-card {
+    flex-direction: column;
+  }
+
+  .post-image {
+    width: 100%;
+    height: 180px;
+  }
 }
 </style>

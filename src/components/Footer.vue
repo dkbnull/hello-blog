@@ -1,19 +1,13 @@
 <template>
   <footer class="footer">
-    <div class="container">
-      <div class="footer-info">
-        <p>&copy; {{ new Date().getFullYear() }} null. 版权所有.</p>
-      </div>
-      <div class="footer-records">
-        <div class="record-item">
-          <a href="https://beian.miit.gov.cn/" target="_blank" class="record-link">鲁ICP备2026010010号-1</a>
-        </div>
-        <div class="record-item">
-          <a href="https://beian.mps.gov.cn/#/query/webSearch" target="_blank" class="record-link">
-            <img src="https://beian.mps.gov.cn/web/assets/logo01.6189a29f.png" class="record-icon" alt="公安备案图标">
-            鲁公网安备37021402007219号
-          </a>
-        </div>
+    <div class="container footer-inner">
+      <p class="copyright">&copy; {{ new Date().getFullYear() }} null. 版权所有.</p>
+      <div class="records">
+        <a href="https://beian.miit.gov.cn/" target="_blank" class="record-link">鲁ICP备2026010010号-1</a>
+        <a href="https://beian.mps.gov.cn/#/query/webSearch" target="_blank" class="record-link">
+          <img src="https://beian.mps.gov.cn/web/assets/logo01.6189a29f.png" class="record-icon" alt="公安备案图标">
+          鲁公网安备37021402007219号
+        </a>
       </div>
     </div>
   </footer>
@@ -24,37 +18,42 @@
 
 <style scoped>
 .footer {
-  background-color: #f5f5f5;
-  color: #333333;
-  font-size: 0.9rem;
+  background-color: var(--color-bg-footer);
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
   text-align: center;
-  padding: 1rem;
+  padding: var(--spacing-md);
   margin-top: auto;
-  border-top: 1px solid #e0e0e0;
-  transition: background-color 0.3s, color 0.3s;
+  border-top: 1px solid var(--color-border);
+  transition: background-color var(--transition-normal), color var(--transition-normal);
 }
 
-.footer-records {
+.footer-inner {
   display: flex;
-  gap: 30px;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.records {
+  display: flex;
+  gap: var(--spacing-xl);
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
 }
 
-.record-item {
+.record-link {
+  color: var(--color-text-secondary);
+  text-decoration: none;
   display: flex;
   align-items: center;
   gap: 5px;
-}
-
-.record-link {
-  color: #333333;
-  text-decoration: none;
-  transition: color 0.3s ease;
+  transition: color var(--transition-normal);
 }
 
 .record-link:hover {
+  color: var(--color-primary);
   text-decoration: none;
 }
 
@@ -64,23 +63,10 @@
   vertical-align: middle;
 }
 
-/* 深色模式 */
-.dark-mode .footer {
-  background-color: #1e1e1e;
-  color: #e0e0e0;
-  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.dark-mode .record-link {
-  color: #e0e0e0;
-}
-
-/* 响应式设计 */
 @media (max-width: 768px) {
-  .footer-records {
+  .records {
     flex-direction: column;
-    align-items: center;
-    gap: 0;
+    gap: var(--spacing-xs);
   }
 }
 </style>
