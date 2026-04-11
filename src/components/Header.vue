@@ -1,13 +1,21 @@
 <template>
   <header class="header">
     <div class="container header-inner">
-      <h1 class="logo">
-        <router-link to="/">Hello Blog</router-link>
-      </h1>
+      <router-link to="/" class="brand">
+        <img src="/favicon.svg" class="logo" alt="logo"/>
+        <span class="brand-text">Hello Blog</span>
+      </router-link>
       <div class="header-right">
-        <nav class="nav">
-          <router-link to="/" class="nav-link">首页</router-link>
-          <router-link to="/about" class="nav-link">关于</router-link>
+        <nav :class="['nav', { 'nav-open': menuOpen }]">
+          <router-link
+              v-for="link in navLinks"
+              :key="link.path"
+              :to="link.path"
+              class="nav-link"
+              @click="menuOpen = false"
+          >
+            {{ link.name }}
+          </router-link>
         </nav>
         <button class="theme-toggle" @click="toggleTheme" :aria-label="isDarkMode ? '切换浅色模式' : '切换深色模式'">
           <svg v-if="isDarkMode" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
@@ -28,13 +36,31 @@
           </svg>
         </button>
       </div>
+      <button
+          class="menu-toggle"
+          :aria-label="menuOpen ? '关闭菜单' : '打开菜单'"
+          @click="menuOpen = !menuOpen"
+      >
+        <span :class="['hamburger', { active: menuOpen }]">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+      </button>
     </div>
   </header>
 </template>
 
 <script setup>
-import {onMounted, ref} from 'vue';
-import {toggleDarkMode} from '../utils/helpers';
+import {onMounted, ref} from 'vue'
+import {toggleDarkMode} from '../utils/helpers'
+
+const menuOpen = ref(false)
+
+const navLinks = [
+  {name: '首页', path: '/'},
+  {name: '页于', path: '/about'}
+]
 
 const isDarkMode = ref(false);
 
@@ -50,34 +76,39 @@ onMounted(() => {
 <style scoped>
 .header {
   background-color: var(--color-bg-card);
-  color: var(--color-text);
-  padding: var(--spacing-md) 0;
+  border-bottom: 1px solid var(--color-border);
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 2px 4px var(--color-shadow);
-  transition: background-color var(--transition-normal), color var(--transition-normal);
 }
 
 .header-inner {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  height: 64px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  text-decoration: none;
 }
 
 .logo {
-  margin: 0;
-  font-size: 1.5rem;
+  width: 32px;
+  height: 32px;
+}
+
+.brand-text {
+  font-size: var(--font-size-xl);
   font-weight: 700;
-}
-
-.logo a {
   color: var(--color-text);
-  text-decoration: none;
-  transition: color var(--transition-normal);
+  letter-spacing: -0.02em;
 }
 
-.logo a:hover {
+.brand-text:hover {
   color: var(--color-primary);
 }
 
@@ -87,23 +118,61 @@ onMounted(() => {
   gap: var(--spacing-lg);
 }
 
+.nav {
+  display: flex;
+  gap: var(--spacing-xs);
+  align-items: center;
+}
+
 .nav-link {
-  color: var(--color-text);
-  text-decoration: none;
-  margin-left: var(--spacing-lg);
-  padding: var(--spacing-sm) var(--spacing-md);
+  padding: 6px 14px;
   border-radius: var(--radius-sm);
-  transition: background var(--transition-normal), color var(--transition-normal);
-}
-
-.nav-link:hover {
-  background: var(--color-bg-hover);
-  text-decoration: none;
-}
-
-.nav-link.router-link-exact-active {
-  color: var(--color-primary);
+  font-size: var(--font-size-sm);
   font-weight: 500;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: var(--transition-fast);
+}
+
+.nav-link:hover,
+.nav-link.router-link-active {
+  color: var(--color-primary);
+  background-color: var(--color-primary-light);
+}
+
+.menu-toggle {
+  display: none;
+  padding: var(--spacing-sm);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 22px;
+}
+
+.hamburger span {
+  display: block;
+  height: 2px;
+  background-color: var(--color-text);
+  border-radius: 1px;
+  transition: var(--transition-fast);
+}
+
+.hamburger.active span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
 }
 
 .theme-toggle {
@@ -121,5 +190,35 @@ onMounted(() => {
 
 .theme-toggle:hover {
   background: var(--color-bg-hover);
+}
+
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: block;
+  }
+
+  .nav {
+    display: none;
+    position: absolute;
+    top: 64px;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    background-color: var(--color-bg-card);
+    border-bottom: 1px solid var(--color-border);
+    padding: var(--spacing-md);
+    gap: var(--spacing-xs);
+    box-shadow: var(--shadow);
+  }
+
+  .nav-open {
+    display: flex;
+  }
+
+  .nav-link {
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    text-align: left;
+  }
 }
 </style>

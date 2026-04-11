@@ -20,7 +20,7 @@
 
 ## 项目简介
 
-HelloBlog 是一个基于 **Vue 3 + Vite** 构建的个人技术博客系统，专注于分享 Java、Spring Boot、Docker、Linux 等技术文章。
+Hello Blog 是一个基于 Vue 3 + Vite 构建的个人技术博客系统，专注于分享 Java、Spring Boot、Docker、Linux 等技术文章。
 
 ## 技术栈
 

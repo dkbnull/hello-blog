@@ -1,7 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200" fill="none">
-    <rect width="200" height="200" rx="48" fill="#42b883"/>
-    <path d="M40 50H160V130H95L75 150V130H40V50Z" fill="white" fill-opacity="0.95"/>
-    <text x="100" y="105" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="44" font-weight="700" fill="#42b883">Blog
-    </text>
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+    <rect width="256" height="256" rx="48" fill="#42b883"/>
+    <g transform="translate(50, 45)">
+        <rect x="0" y="0" width="156" height="166" rx="8" fill="white" fill-opacity="0.95"/>
+        <rect x="15" y="25" width="90" height="8" rx="2" fill="#42b883"/>
+        <rect x="15" y="45" width="126" height="6" rx="2" fill="#a0aec0"/>
+        <rect x="15" y="60" width="120" height="6" rx="2" fill="#a0aec0"/>
+        <rect x="15" y="80" width="126" height="6" rx="2" fill="#a0aec0"/>
+        <rect x="15" y="95" width="100" height="6" rx="2" fill="#a0aec0"/>
+        <rect x="15" y="115" width="126" height="6" rx="2" fill="#a0aec0"/>
+        <rect x="15" y="130" width="80" height="6" rx="2" fill="#a0aec0"/>
+        <path d="M130 145 L145 150 L140 165 Z" fill="#42b883"/>
+    </g>
 </svg>
