@@ -50,6 +50,21 @@ const generateErrorContent = (title, message) => `
   </div>
 `;
 
+export const searchArticles = (keyword) => {
+    if (!keyword || !keyword.trim()) return [];
+
+    const kw = keyword.trim().toLowerCase();
+    const allArticles = getAllArticles();
+
+    return allArticles.filter(article => {
+        const titleMatch = article.title.toLowerCase().includes(kw);
+        const categoryName = getCategoryName(article.category).toLowerCase();
+        const categoryMatch = categoryName.includes(kw) || article.category.toLowerCase().includes(kw);
+        const tagMatch = article.tags?.some(tag => tag.toLowerCase().includes(kw));
+        return titleMatch || categoryMatch || tagMatch;
+    });
+};
+
 export const getArticleContent = async (categoryId, articleId) => {
     const cacheKey = `${categoryId}-${articleId}`;
     if (articleContentCache.has(cacheKey)) {

@@ -6,6 +6,27 @@
         <span class="brand-text">Hello Blog</span>
       </router-link>
       <div class="header-right">
+        <div class="search-box">
+          <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input
+              type="text"
+              class="search-input"
+              placeholder="搜索文章..."
+              v-model="searchKeyword"
+              @keyup.enter="handleSearch"
+          />
+          <button v-if="searchKeyword" class="search-clear" @click="clearSearch" aria-label="清空搜索">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
         <nav :class="['nav', { 'nav-open': menuOpen }]">
           <router-link
               v-for="link in navLinks"
@@ -53,9 +74,13 @@
 
 <script setup>
 import {onMounted, ref} from 'vue'
+import {useRoute, useRouter} from 'vue-router'
 import {toggleDarkMode} from '../utils/helpers'
 
 const menuOpen = ref(false)
+const searchKeyword = ref('')
+const router = useRouter()
+const route = useRoute()
 
 const navLinks = [
   {name: '首页', path: '/'},
@@ -68,8 +93,28 @@ const toggleTheme = () => {
   isDarkMode.value = toggleDarkMode();
 };
 
+const handleSearch = () => {
+  const keyword = searchKeyword.value.trim();
+  if (keyword) {
+    router.push({path: '/search', query: {q: keyword}});
+  } else if (route.path === '/search') {
+    router.push({path: '/'});
+  }
+  menuOpen.value = false;
+};
+
+const clearSearch = () => {
+  searchKeyword.value = '';
+  if (route.path === '/search') {
+    router.push({path: '/'});
+  }
+};
+
 onMounted(() => {
   isDarkMode.value = document.body.classList.contains('dark-mode');
+  if (route.query.q) {
+    searchKeyword.value = route.query.q;
+  }
 });
 </script>
 
@@ -116,6 +161,65 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: var(--spacing-lg);
+}
+
+.search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 10px;
+  color: var(--color-text-tertiary);
+  pointer-events: none;
+}
+
+.search-input {
+  padding: 6px 30px 6px 32px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-sm);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  outline: none;
+  width: 180px;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), width var(--transition-normal);
+}
+
+.search-input:not(:has(~ .search-clear)) {
+  padding-right: 12px;
+}
+
+.search-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-light);
+  width: 240px;
+}
+
+.search-input::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.search-clear {
+  position: absolute;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 50%;
+  transition: color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.search-clear:hover {
+  color: var(--color-text);
+  background-color: var(--color-bg-hover);
 }
 
 .nav {
@@ -219,6 +323,14 @@ onMounted(() => {
     width: 100%;
     padding: var(--spacing-sm) var(--spacing-md);
     text-align: left;
+  }
+
+  .search-input {
+    width: 120px;
+  }
+
+  .search-input:focus {
+    width: 160px;
   }
 }
 </style>
