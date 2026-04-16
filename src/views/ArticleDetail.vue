@@ -139,10 +139,8 @@ onMounted(() => {
 
 .article-body :deep(pre) {
   background-color: var(--color-bg-code);
-  padding: var(--spacing-md);
   border-radius: var(--radius-sm);
   overflow-x: auto;
-  margin-bottom: var(--spacing-md);
   font-family: var(--font-mono);
 }
 
@@ -208,9 +206,9 @@ onMounted(() => {
 }
 
 .html-content :deep(.container) {
-  max-width: var(--article-max);
-  margin: 0 auto;
-  padding: 0 var(--spacing-md);
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 .html-content :deep(.article-content) {
@@ -236,7 +234,6 @@ onMounted(() => {
 
 @media (max-width: 768px) {
   .article-content {
-    padding: var(--spacing-md);
   }
 
   .article-title {

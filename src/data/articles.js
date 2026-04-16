@@ -2,8 +2,6 @@ import {articlesData, categoriesData} from "./data.js";
 
 const articleContentCache = new Map();
 
-const BASE_URL = import.meta.env.VITE_IMAGE_BASE_URL || '';
-
 export const getCategories = () => categoriesData;
 
 export const getCategoryName = (categoryId) => {
@@ -30,16 +28,10 @@ export const getArticleById = (categoryId, articleId) => {
 
 const buildArticlePath = (categoryId, articleId, title, extension) => {
     const fileName = `${articleId}_${title}.${extension}`;
-    if (BASE_URL) {
-        return `${BASE_URL}/articles/${categoryId}/${fileName}`;
-    }
     return `/articles/${categoryId}/${fileName}`;
 };
 
 const buildImageBaseUrl = (categoryId) => {
-    if (BASE_URL) {
-        return `${BASE_URL}/articles/${categoryId}/assets/`;
-    }
     return `/articles/${categoryId}/assets/`;
 };
 

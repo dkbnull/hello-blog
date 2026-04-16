@@ -5,9 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && npm run copy-assets",
-    "preview": "vite preview",
-    "copy-assets": "node scripts/copy-assets.js"
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
     "marked": "^17.0.4",
