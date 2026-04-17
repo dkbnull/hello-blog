@@ -1,36 +1,34 @@
 <template>
   <div class="about">
-    <div class="container">
-      <div class="content">
-        <h1 class="page-title">Hello Blog</h1>
-        <p class="page-subtitle">个人博客 - 用于展示技术文章和分享知识</p>
+    <div class="content">
+      <h1 class="page-title">Hello Blog</h1>
+      <p class="page-subtitle">个人博客 - 用于展示技术文章和分享知识</p>
 
-        <section v-for="section in linkSections" :key="section.title" class="about-section">
-          <h2 class="section-title">{{ section.title }}</h2>
-          <div class="link-grid">
-            <a
-                v-for="link in section.links"
-                :key="link.name"
-                :href="link.url"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="link-card card"
-            >
-              <img :src="link.icon" :alt="link.name" class="link-icon"/>
-              <span>{{ link.name }}</span>
-            </a>
-          </div>
-        </section>
+      <section v-for="section in linkSections" :key="section.title" class="about-section">
+        <h2 class="section-title">{{ section.title }}</h2>
+        <div class="link-grid">
+          <a
+              v-for="link in section.links"
+              :key="link.name"
+              :href="link.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="link-card card"
+          >
+            <img :src="link.icon" :alt="link.name" class="link-icon"/>
+            <span>{{ link.name }}</span>
+          </a>
+        </div>
+      </section>
 
-        <section class="about-section">
-          <h2 class="section-title">微信公众号</h2>
-          <div class="qrcode-wrapper">
-            <div class="qrcode-card card">
-              <img src="../assets/weixin.jpg" alt="微信二维码" class="qrcode-image"/>
-            </div>
+      <section class="about-section">
+        <h2 class="section-title">微信公众号</h2>
+        <div class="qrcode-wrapper">
+          <div class="qrcode-card card">
+            <img src="../assets/weixin.jpg" alt="微信二维码" class="qrcode-image"/>
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
     </div>
   </div>
 </template>
@@ -60,7 +58,11 @@ const linkSections = [
         url: 'https://github.com/dkbnull/hello-blog/issues',
         icon: 'https://github.com/favicon.ico'
       },
-      {name: 'Gitee Issues', url: 'https://gitee.com/dkbnull/hello-blog/issues', icon: 'https://gitee.com/favicon.ico'},
+      {
+        name: 'Gitee Issues',
+        url: 'https://gitee.com/dkbnull/hello-blog/issues',
+        icon: 'https://gitee.com/favicon.ico'
+      },
     ],
   },
 ];
