@@ -45,31 +45,26 @@ const loadArticleContent = async () => {
   }
 };
 
-const updatePageTitle = () => {
-  if (article.value) {
-    document.title = `${article.value.title} | Hello Blog`;
-  }
-};
-
 watch(
     [() => route.params.category, () => route.params.id],
     ([newCategory, newId]) => {
       categoryId.value = newCategory;
       articleId.value = newId;
       loadArticleContent();
-      updatePageTitle();
     }
 );
 
 onMounted(() => {
   loadArticleContent();
-  updatePageTitle();
 });
 </script>
 
 <style scoped>
 .article-detail {
   padding: var(--spacing-xl) 0;
+  background-color: var(--color-bg);
+  min-height: calc(100vh - var(--header-height));
+  transition: background-color var(--transition-normal);
 }
 
 .article-container {
@@ -78,6 +73,11 @@ onMounted(() => {
 
 .article-content {
   padding: var(--spacing-xl);
+}
+
+.article-content:hover {
+  transform: none;
+  box-shadow: 0 2px 4px var(--color-shadow);
 }
 
 .article-title {
