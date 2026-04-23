@@ -22,6 +22,7 @@
 import {computed, onMounted, ref, watch} from 'vue';
 import {useRoute} from 'vue-router';
 import {getArticleById, getArticleContent, getCategoryName} from '../data/articles';
+import {useArticleSeo} from '../composables/useSeo';
 
 const route = useRoute();
 
@@ -29,6 +30,8 @@ const categoryId = ref(route.params.category);
 const articleId = ref(route.params.id);
 
 const article = computed(() => getArticleById(categoryId.value, articleId.value));
+
+useArticleSeo(article)
 
 const articleContent = ref('');
 const isHtmlContent = ref(false);
