@@ -2,7 +2,7 @@
   <div class="about">
     <div class="content">
       <h1 class="page-title">Hello Blog</h1>
-      <p class="page-subtitle">个人博客 - 用于展示技术文章和分享知识</p>
+      <p class="page-subtitle">个人博客 - 分享技术文章、开发笔记与生活感悟</p>
 
       <section v-for="section in linkSections" :key="section.title" class="about-section">
         <h2 class="section-title">{{ section.title }}</h2>
