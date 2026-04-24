@@ -1,8 +1,8 @@
 <template>
   <transition name="back-to-top-fade">
     <button
-        v-if="backToTopVisible"
-        @click="scrollToTop"
+        v-if="showBackToTop"
+        @click="backToTop"
         class="back-to-top"
         aria-label="回到顶部"
     >
@@ -17,13 +17,13 @@
 <script setup>
 import {onMounted, onUnmounted, ref} from 'vue'
 
-const backToTopVisible = ref(false)
+const showBackToTop = ref(false)
 
 const handleScroll = () => {
-  backToTopVisible.value = window.scrollY > 300
+  showBackToTop.value = window.scrollY > 300
 }
 
-const scrollToTop = () => {
+const backToTop = () => {
   window.scrollTo({top: 0, behavior: 'smooth'})
 }
 
