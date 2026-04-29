@@ -1,10 +1,13 @@
 <template>
   <div class="search-page">
     <div class="container">
-      <div class="home-layout">
+      <div class="page-layout">
         <Sidebar :active-category="''"/>
-        <main class="content">
-          <h2 class="page-title">搜索结果</h2>
+        <main class="page-content">
+          <div class="page-content-header">
+            <h2 class="page-title">搜索结果</h2>
+            <SortControl v-if="keyword && results.length > 0" :sort-order="sortOrder" @change="setSortOrder"/>
+          </div>
 
           <div v-if="keyword" class="search-info">
             <span>关键词：</span>
@@ -22,9 +25,12 @@
             <p class="empty-hint">支持按文章标题、分类、标签进行模糊匹配</p>
           </div>
 
-          <div v-if="results.length > 0" class="posts-container">
-            <PostCard v-for="post in results" :key="`${post.category}-${post.id}`" :post="post"/>
-          </div>
+          <template v-if="results.length > 0">
+            <div class="posts-container">
+              <PostCard v-for="post in pagedItems" :key="`${post.category}-${post.id}`" :post="post"/>
+            </div>
+            <Pagination v-model:current-page="currentPage" :total-pages="totalPages"/>
+          </template>
         </main>
       </div>
     </div>
@@ -35,8 +41,11 @@
 import {computed, ref, watch} from 'vue';
 import {useRoute} from 'vue-router';
 import {searchArticles} from '../data/articles';
+import {usePagination} from '../composables/usePagination';
 import PostCard from '../components/PostCard.vue';
 import Sidebar from '../components/Sidebar.vue';
+import Pagination from '../components/Pagination.vue';
+import SortControl from '../components/SortControl.vue';
 
 const route = useRoute();
 const keyword = ref('');
@@ -45,30 +54,17 @@ const results = computed(() => {
   return searchArticles(keyword.value);
 });
 
+const {currentPage, sortOrder, totalPages, pagedItems, setSortOrder, resetPage} = usePagination(results);
+
 watch(() => route.query.q, (newQ) => {
   keyword.value = newQ || '';
+  resetPage();
 }, {immediate: true});
 </script>
 
 <style scoped>
 .search-page {
   padding: var(--spacing-xl) 0;
-}
-
-.home-layout {
-  display: flex;
-  gap: var(--spacing-xl);
-}
-
-.content {
-  flex: 1;
-  min-width: 0;
-}
-
-.page-title {
-  font-size: 1.75rem;
-  margin-bottom: var(--spacing-md);
-  color: var(--color-text);
 }
 
 .search-info {
@@ -89,32 +85,5 @@ watch(() => route.query.q, (newQ) => {
 .search-count {
   color: var(--color-text-tertiary);
   margin-left: var(--spacing-xs);
-}
-
-.posts-container {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-lg);
-}
-
-.empty-state {
-  text-align: center;
-  padding: 4rem 0;
-  color: var(--color-text-secondary);
-}
-
-.empty-state p {
-  margin-bottom: var(--spacing-sm);
-}
-
-.empty-hint {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-tertiary);
-}
-
-@media (max-width: 768px) {
-  .home-layout {
-    flex-direction: column;
-  }
 }
 </style>
