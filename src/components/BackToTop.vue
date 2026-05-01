@@ -15,8 +15,6 @@
 </template>
 
 <script setup>
-import {onMounted, onUnmounted, ref} from 'vue'
-
 const SCROLL_THRESHOLD = 300
 
 const showBackToTop = ref(false)

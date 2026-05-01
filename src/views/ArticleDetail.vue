@@ -44,8 +44,6 @@
 </template>
 
 <script setup>
-import {computed, nextTick, onBeforeUnmount, onMounted, ref, watch} from 'vue';
-import {useRoute} from 'vue-router';
 import {getArticleById, getArticleContent, getCategoryName} from '@/data/articles';
 import {useArticleSeo} from '@/composables/useSeo';
 

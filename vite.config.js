@@ -1,6 +1,9 @@
 import {defineConfig, loadEnv} from 'vite'
 import vue from '@vitejs/plugin-vue'
 import {resolve} from 'path'
+import VueDevTools from 'vite-plugin-vue-devtools'
+import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
 import vitePluginSeoAnalytics from './plugins/vite-plugin-seo-analytics'
 
 export default defineConfig(({mode}) => {
@@ -16,7 +19,7 @@ export default defineConfig(({mode}) => {
             rollupOptions: {
                 output: {
                     manualChunks(id) {
-                        if (id.includes('node_modules/vue') || id.includes('node_modules/vue-router')) {
+                        if (id.includes('node_modules/vue') || id.includes('node_modules/vue-router') || id.includes('node_modules/pinia')) {
                             return 'vue'
                         }
                         if (id.includes('node_modules/marked')) {
@@ -28,6 +31,18 @@ export default defineConfig(({mode}) => {
         },
         plugins: [
             vue(),
+            VueDevTools(),
+            AutoImport({
+                imports: ['vue', 'vue-router', 'pinia'],
+                dts: 'src/auto-imports.d.ts',
+                eslintrc: {
+                    enabled: false
+                }
+            }),
+            Components({
+                dirs: ['src/components', 'src/layouts'],
+                dts: 'src/components.d.ts'
+            }),
             vitePluginSeoAnalytics({
                 siteName: 'Hello Blog',
                 siteUrl: 'https://blog.wbnull.cn',

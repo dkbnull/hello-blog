@@ -36,8 +36,6 @@
 </template>
 
 <script setup>
-import {computed} from 'vue';
-
 const currentPage = defineModel('currentPage', {type: Number, required: true});
 
 const props = defineProps({

@@ -38,14 +38,8 @@
 </template>
 
 <script setup>
-import {computed, ref, watch} from 'vue';
-import {useRoute} from 'vue-router';
 import {searchArticles} from '@/data/articles';
 import {usePagination} from '@/composables/usePagination';
-import PostCard from '@/components/PostCard.vue';
-import Sidebar from '@/components/Sidebar.vue';
-import Pagination from '@/components/Pagination.vue';
-import SortControl from '@/components/SortControl.vue';
 
 const route = useRoute();
 const keyword = ref('');

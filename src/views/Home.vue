@@ -30,14 +30,8 @@
 </template>
 
 <script setup>
-import {computed, onMounted, ref, watch} from 'vue';
-import {useRoute} from 'vue-router';
 import {getAllArticles, getArticlesByCategory, getCategoryName} from '@/data/articles';
 import {usePagination} from '@/composables/usePagination';
-import PostCard from '@/components/PostCard.vue';
-import Sidebar from '@/components/Sidebar.vue';
-import Pagination from '@/components/Pagination.vue';
-import SortControl from '@/components/SortControl.vue';
 
 const route = useRoute();
 const activeCategory = ref('');

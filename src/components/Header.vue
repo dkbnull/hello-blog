@@ -73,9 +73,7 @@
 </template>
 
 <script setup>
-import {onMounted, ref} from 'vue'
-import {useRoute, useRouter} from 'vue-router'
-import {toggleDarkMode} from '@/utils/helpers'
+import {useAppStore} from '@/stores/app'
 
 const NAV_LINKS = [
   {name: '首页', path: '/'},
@@ -84,18 +82,21 @@ const NAV_LINKS = [
 
 const route = useRoute()
 const router = useRouter()
+const appStore = useAppStore()
 
 const menuOpen = ref(false)
 const searchKeyword = ref('')
-const isDarkMode = ref(false)
+
+const isDarkMode = computed(() => appStore.isDarkMode)
 
 const toggleTheme = () => {
-  isDarkMode.value = toggleDarkMode();
+  appStore.toggleDarkMode()
 };
 
 const handleSearch = () => {
   const keyword = searchKeyword.value.trim();
   if (keyword) {
+    appStore.setSearchKeyword(keyword);
     router.push({path: '/search', query: {q: keyword}});
   } else if (route.path === '/search') {
     router.push({path: '/'});
@@ -105,13 +106,13 @@ const handleSearch = () => {
 
 const clearSearch = () => {
   searchKeyword.value = '';
+  appStore.setSearchKeyword('');
   if (route.path === '/search') {
     router.push({path: '/'});
   }
 };
 
 onMounted(() => {
-  isDarkMode.value = document.body.classList.contains('dark-mode');
   if (route.query.q) {
     searchKeyword.value = route.query.q;
   }

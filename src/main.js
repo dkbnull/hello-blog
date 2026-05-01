@@ -1,14 +1,19 @@
 import {createApp} from 'vue'
+import {createPinia} from 'pinia'
 import App from '@/App.vue'
 import router from '@/router'
 import '@/style.css'
-import {initDarkMode} from '@/utils/helpers'
+import {useAppStore} from '@/stores/app'
 import seoAnalytics from '@/plugins/seoAnalytics'
 
-// 初始化深色模式
-initDarkMode()
+const app = createApp(App)
+const pinia = createPinia()
 
-createApp(App)
-    .use(router)
+app.use(pinia)
+
+const appStore = useAppStore()
+appStore.initDarkMode()
+
+app.use(router)
     .use(seoAnalytics, {router, siteUrl: 'https://blog.wbnull.cn'})
     .mount('#app')
