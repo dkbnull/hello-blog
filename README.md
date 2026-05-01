@@ -22,84 +22,142 @@
 
 Hello Blog 是一个基于 Vue 3 + Vite 构建的个人博客系统，用于分享技术文章、开发笔记与生活感悟。
 
-## 技术栈
-
-| 技术         | 版本     | 说明          |
-|------------|--------|-------------|
-| Vue        | 3.5.30 | 前端框架        |
-| Vue Router | 5.0.3  | 路由管理        |
-| Vite       | 8.0.8  | 构建工具        |
-| marked     | 17.0.4 | Markdown 解析 |
-
-## 项目结构
-
-```
-hello-blog/
-├── public/              # 静态资源
-|   ├── articles/        # 文章内容
-│   └── favicon.svg      # Logo
-├── src/
-│   ├── assets/          # 资源文件（图标、图片）
-│   ├── components/      # 组件
-│   │   ├── Header.vue   # 顶部导航
-│   │   ├── Footer.vue   # 底部
-│   │   ├── PostCard.vue # 文章卡片
-│   │   └── Sidebar.vue  # 侧边栏
-│   ├── data/            # 数据层
-│   │   ├── articles.js  # 文章加载工具
-│   │   └── data.js      # 文章数据
-│   ├── router/          # 路由配置
-│   ├── utils/           # 工具函数
-│   ├── views/           # 页面
-│   │   ├── Home.vue     # 首页/分类页
-│   │   ├── ArticleDetail.vue # 文章详情
-│   │   └── About.vue    # 关于
-│   ├── App.vue          # 根组件
-│   ├── main.js          # 入口文件
-│   └── style.css        # 全局样式（含 CSS 变量）
-├── scripts/
-│   └── copy-assets.js   # 构建后复制静态资源
-├── vite.config.js       # Vite 配置
-└── package.json
-```
-
 ## 功能特性
 
 ### 📝 文章管理
 
 - 文章分类浏览
-- Markdown 格式文章展示
 - 文章标签筛选
+- 支持 HTML 和 Markdown 两种格式文章展示
+- 文章内容缓存，避免重复请求
+
+### 🔍 搜索功能
+
+- 全站模糊搜索，支持按标题、分类、标签匹配
+- 独立搜索结果页面
 
 ### 🎨 界面设计
 
 - 响应式布局，适配桌面端/移动端
-- 深色/浅色模式切换
+- 深色/浅色模式切换（状态持久化至 localStorage）
 - CSS 变量统一主题配色（主题色 #42b883）
 - 卡片式设计，简洁美观
+- 默认布局组件（Header + Main + Footer + BackToTop）
 
 ### ⚡ 性能优化
 
 - 路由懒加载
 - 构建资源自动哈希
-- 文章内容缓存
+- Vite 手动分包（vue/markdown 独立 chunk）
+- API 与组件自动导入（unplugin-auto-import / unplugin-vue-components）
+
+### 🔎 SEO 优化
+
+- 构建时注入 SEO 元标签（description、keywords、OG、Twitter Card）
+- 构建时注入 JSON-LD 结构化数据（WebSite + SearchAction）
+- 运行时路由级 SEO 元信息自动更新
+- 文章详情页动态 SEO
+- Canonical URL 设置
+
+### 📊 数据统计
+
+- 百度统计集成
+- 页面浏览自动上报
+- 自定义事件上报支持
+
+### 📄 分页与排序
+
+- 文章列表分页（每页 10 篇）
+- 按日期升序/降序排序
+
+## 技术栈
+
+| 技术                       | 版本     | 说明          |
+|--------------------------|--------|-------------|
+| Vue                      | 3.5.30 | 前端框架        |
+| Vue Router               | 5.0.3  | 路由管理        |
+| Pinia                    | 3.0.4  | 状态管理        |
+| Vite                     | 8.0.8  | 构建工具        |
+| marked                   | 17.0.4 | Markdown 解析 |
+| unplugin-auto-import     | 21.0.0 | API 自动导入    |
+| unplugin-vue-components  | 32.0.0 | 组件自动导入      |
+| vite-plugin-vue-devtools | 8.1.1  | Vue 开发者工具   |
+
+## 项目结构
+
+```
+hello-blog/
+├── plugins/                        # Vite 插件
+│   └── vite-plugin-seo-analytics.js # SEO 分析构建插件
+├── public/
+│   └── favicon.svg                 # Logo
+├── src/
+│   ├── assets/                     # 资源文件（图标、图片）
+│   ├── components/                 # 组件
+│   │   ├── BackToTop.vue           # 回到顶部
+│   │   ├── Footer.vue              # 底部
+│   │   ├── Header.vue              # 顶部导航
+│   │   ├── Pagination.vue          # 分页
+│   │   ├── PostCard.vue            # 文章卡片
+│   │   ├── Sidebar.vue             # 侧边栏
+│   │   └── SortControl.vue         # 排序控制
+│   ├── composables/                # 组合式函数
+│   │   ├── usePagination.js        # 分页逻辑
+│   │   └── useSeo.js               # SEO 元信息管理
+│   ├── data/                       # 数据层
+│   │   ├── articles.js             # 文章查询/搜索/内容加载
+│   │   └── data.js                 # 分类与文章元数据
+│   ├── layouts/
+│   │   └── DefaultLayout.vue       # 默认布局
+│   ├── plugins/
+│   │   └── seoAnalytics.js         # SEO 分析运行时插件
+│   ├── router/
+│   │   └── index.js                # 路由配置
+│   ├── stores/
+│   │   └── app.js                  # 全局状态（深色模式等）
+│   ├── views/                      # 页面
+│   │   ├── About.vue               # 关于
+│   │   ├── ArticleDetail.vue       # 文章详情
+│   │   ├── Home.vue                # 首页/分类页
+│   │   ├── NotFound.vue            # 404
+│   │   └── Search.vue              # 搜索
+│   ├── App.vue                     # 根组件
+│   ├── main.js                     # 入口文件
+│   └── style.css                   # 全局样式（含 CSS 变量）
+├── .env                            # 环境变量
+├── index.html                      # HTML 入口
+├── vite.config.js                  # Vite 配置
+└── package.json
+```
 
 ## 如何添加文章
 
 ### 1. 准备文章内容
 
-在 `public/articles/` 目录下创建分类文件夹和文章文件：
+在 `public/articles/` 目录下创建分类文件夹和文章文件，文件命名格式为 `id_title.html` 或 `id_title.md`：
 
 ```
 public/articles/
-├── vue/
-│   └── 01.html
-├── vite/
-│   ├── 00.html
-│   ├── 01.html
+├── frontend/
+│   ├── 1_Vue 3 新特性详解.html
+│   └── 2_TypeScript 入门指南.html
+├── backend/
+│   ├── 3_Node.js 性能优化技巧.html
 │   └── ...
 └── ...
 ```
+
+文章中引用本地图片时，将图片放在对应分类的 `assets/` 目录下，使用相对路径引用：
+
+```
+public/articles/
+├── frontend/
+│   ├── assets/
+│   │   └── image.png
+│   └── 1_Vue 3 新特性详解.html
+```
+
+HTML 文件中使用 `./assets/` 引用图片，加载时会自动替换为正确路径。
 
 ### 2. 添加文章元数据
 
@@ -111,20 +169,14 @@ export const articlesData = {
         {
             id: '01',
             title: '文章标题',
-            category: 'vue',
+            category: 'frontend',
             tags: ['Vue', '前端'],
             date: '2026-01-01',
             author: '作者',
-            image: vueIcon
+            image: frontendIcon
         }
     ]
 }
-```
-
-### 3. 构建验证
-
-```bash
-npm run build
 ```
 
 ## 许可证
