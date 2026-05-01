@@ -29,7 +29,7 @@
         </div>
         <nav :class="['nav', { 'nav-open': menuOpen }]">
           <router-link
-              v-for="link in navLinks"
+              v-for="link in NAV_LINKS"
               :key="link.path"
               :to="link.path"
               class="nav-link"
@@ -75,19 +75,19 @@
 <script setup>
 import {onMounted, ref} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
-import {toggleDarkMode} from '../utils/helpers'
+import {toggleDarkMode} from '@/utils/helpers'
 
-const menuOpen = ref(false)
-const searchKeyword = ref('')
-const router = useRouter()
-const route = useRoute()
-
-const navLinks = [
+const NAV_LINKS = [
   {name: '首页', path: '/'},
   {name: '关于', path: '/about'}
 ]
 
-const isDarkMode = ref(false);
+const route = useRoute()
+const router = useRouter()
+
+const menuOpen = ref(false)
+const searchKeyword = ref('')
+const isDarkMode = ref(false)
 
 const toggleTheme = () => {
   isDarkMode.value = toggleDarkMode();

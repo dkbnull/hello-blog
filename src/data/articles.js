@@ -1,4 +1,9 @@
-import {articlesData, categoriesData} from "./data.js";
+/**
+ * 文章数据服务层
+ * 提供文章的查询、搜索、内容加载等功能
+ */
+
+import {articlesData, categoriesData} from "@/data/data.js";
 
 const articleContentCache = new Map();
 
@@ -42,6 +47,10 @@ const generateErrorContent = (title, message) => `
   </div>
 `;
 
+/**
+ * 模糊搜索文章
+ * 支持按标题、分类名称、标签进行匹配
+ */
 export const searchArticles = (keyword) => {
     if (!keyword || !keyword.trim()) return [];
 
@@ -57,6 +66,11 @@ export const searchArticles = (keyword) => {
     });
 };
 
+/**
+ * 获取文章内容
+ * 优先加载 HTML 格式，其次加载 Markdown 格式并转换
+ * 使用缓存避免重复请求
+ */
 export const getArticleContent = async (categoryId, articleId) => {
     const cacheKey = `${categoryId}-${articleId}`;
     if (articleContentCache.has(cacheKey)) {
@@ -95,7 +109,6 @@ export const getArticleContent = async (categoryId, articleId) => {
         articleContentCache.set(cacheKey, defaultContent);
         return defaultContent;
     } catch (error) {
-        console.error('加载文章内容失败:', error);
         const article = getArticleById(categoryId, articleId);
         const errorContent = generateErrorContent(article?.title, `文章内容加载失败: ${error.message}`);
         articleContentCache.set(cacheKey, errorContent);

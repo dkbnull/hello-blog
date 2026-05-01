@@ -18,7 +18,7 @@
 </template>
 
 <script setup>
-import {getArticleCount, getCategories} from '../data/articles';
+import {getArticleCount, getCategories} from '@/data/articles';
 
 defineProps({
   activeCategory: {

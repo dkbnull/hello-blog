@@ -1,28 +1,12 @@
 <template>
-  <div class="app">
-    <Header/>
-    <main class="main-content">
-      <router-view/>
-    </main>
-    <Footer/>
-    <BackToTop/>
-  </div>
+  <DefaultLayout>
+    <router-view/>
+  </DefaultLayout>
 </template>
 
 <script setup>
-import Header from './components/Header.vue';
-import Footer from './components/Footer.vue';
-import BackToTop from './components/BackToTop.vue';
+import DefaultLayout from '@/layouts/DefaultLayout.vue';
 </script>
 
-<style>
-.app {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-.main-content {
-  flex: 1;
-}
+<style scoped>
 </style>

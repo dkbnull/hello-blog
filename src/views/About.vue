@@ -25,7 +25,7 @@
         <h2 class="section-title">微信公众号</h2>
         <div class="qrcode-wrapper">
           <div class="qrcode-card card">
-            <img src="../assets/weixin.jpg" alt="微信二维码" class="qrcode-image"/>
+            <img :src="weixinImage" alt="微信二维码" class="qrcode-image"/>
           </div>
         </div>
       </section>
@@ -34,6 +34,8 @@
 </template>
 
 <script setup>
+import weixinImage from '@/assets/weixin.jpg';
+
 const linkSections = [
   {
     title: '仓库地址',

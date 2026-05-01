@@ -1,4 +1,9 @@
-import {updateSeo, _setActive, _setSiteUrl} from '../composables/useSeo'
+/**
+ * SEO 分析插件
+ * 集成百度统计和 SEO 元信息自动更新
+ */
+
+import {_setActive, _setSiteUrl, updateSeo} from '@/composables/useSeo'
 
 function reportPageView(url) {
     if (!window._hmt) return

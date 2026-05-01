@@ -1,5 +1,10 @@
-import frontendIcon from '../assets/frontend.svg';
-import backendIcon from '../assets/backend.svg';
+/**
+ * 博客基础数据
+ * 包含分类信息和文章列表数据
+ */
+
+import frontendIcon from '@/assets/frontend.svg';
+import backendIcon from '@/assets/backend.svg';
 
 export const categoriesData = [
     {id: 'frontend', name: '前端开发', icon: '💻'},

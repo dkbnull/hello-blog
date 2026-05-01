@@ -1,11 +1,31 @@
 import {defineConfig, loadEnv} from 'vite'
 import vue from '@vitejs/plugin-vue'
+import {resolve} from 'path'
 import vitePluginSeoAnalytics from './plugins/vite-plugin-seo-analytics'
 
 export default defineConfig(({mode}) => {
     const env = loadEnv(mode, process.cwd())
 
     return {
+        resolve: {
+            alias: {
+                '@': resolve(__dirname, 'src')
+            }
+        },
+        build: {
+            rollupOptions: {
+                output: {
+                    manualChunks(id) {
+                        if (id.includes('node_modules/vue') || id.includes('node_modules/vue-router')) {
+                            return 'vue'
+                        }
+                        if (id.includes('node_modules/marked')) {
+                            return 'markdown'
+                        }
+                    }
+                }
+            }
+        },
         plugins: [
             vue(),
             vitePluginSeoAnalytics({

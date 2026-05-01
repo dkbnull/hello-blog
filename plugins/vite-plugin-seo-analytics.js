@@ -1,3 +1,8 @@
+/**
+ * Vite SEO 分析插件
+ * 在构建时自动注入 SEO 元标签、结构化数据和百度统计脚本
+ */
+
 export default function vitePluginSeoAnalytics(options = {}) {
     const {
         siteName = '',

@@ -25,8 +25,8 @@
 
 <script setup>
 import {computed} from 'vue';
-import {getCategoryName} from '../data/articles';
-import defaultImage from '../assets/default.svg';
+import {getCategoryName} from '@/data/articles';
+import defaultImage from '@/assets/default.svg';
 
 const props = defineProps({
   post: {

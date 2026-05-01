@@ -38,17 +38,16 @@
 <script setup>
 import {computed} from 'vue';
 
+const currentPage = defineModel('currentPage', {type: Number, required: true});
+
 const props = defineProps({
-  currentPage: {type: Number, required: true},
   totalPages: {type: Number, required: true},
   maxVisible: {type: Number, default: 5}
 });
 
-const emit = defineEmits(['update:currentPage']);
-
 const visiblePages = computed(() => {
   const total = props.totalPages;
-  const current = props.currentPage;
+  const current = currentPage.value;
   const max = props.maxVisible;
 
   if (total <= max + 2) {
@@ -77,8 +76,8 @@ const visiblePages = computed(() => {
 });
 
 const changePage = (page) => {
-  if (page >= 1 && page <= props.totalPages && page !== props.currentPage) {
-    emit('update:currentPage', page);
+  if (page >= 1 && page <= props.totalPages && page !== currentPage.value) {
+    currentPage.value = page;
   }
 };
 </script>

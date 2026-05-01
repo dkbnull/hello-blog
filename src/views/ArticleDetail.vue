@@ -19,18 +19,24 @@
         </nav>
       </aside>
       <div class="article-main">
-        <div v-if="isHtmlContent" ref="contentRef" class="html-content" v-html="articleContent"></div>
-        <article v-else class="article-content card">
-          <h1 class="article-title">{{ article?.title }}</h1>
-          <div class="article-meta">
-            <span>{{ article?.date }}</span>
-            <span class="meta-separator">·</span>
-            <router-link :to="`/category/${article?.category}`" class="meta-category">
-              {{ getCategoryName(article?.category) }}
-            </router-link>
-          </div>
-          <div ref="contentRef" class="article-body" v-html="articleContent"></div>
-        </article>
+        <div v-if="isLoading" class="loading-state">
+          <div class="loading-spinner"></div>
+          <p>文章加载中...</p>
+        </div>
+        <template v-else>
+          <div v-if="isHtmlContent" ref="contentRef" class="html-content" v-html="articleContent"></div>
+          <article v-else class="article-content card">
+            <h1 class="article-title">{{ article?.title }}</h1>
+            <div class="article-meta">
+              <span>{{ article?.date }}</span>
+              <span class="meta-separator">·</span>
+              <router-link :to="`/category/${article?.category}`" class="meta-category">
+                {{ getCategoryName(article?.category) }}
+              </router-link>
+            </div>
+            <div ref="contentRef" class="article-body" v-html="articleContent"></div>
+          </article>
+        </template>
         <router-link to="/" class="back-link">← 返回首页</router-link>
       </div>
     </div>
@@ -40,27 +46,32 @@
 <script setup>
 import {computed, nextTick, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import {useRoute} from 'vue-router';
-import {getArticleById, getArticleContent, getCategoryName} from '../data/articles';
-import {useArticleSeo} from '../composables/useSeo';
+import {getArticleById, getArticleContent, getCategoryName} from '@/data/articles';
+import {useArticleSeo} from '@/composables/useSeo';
 
-const route = useRoute();
+const HEADER_OFFSET = 80
+const SCROLL_POSITION_OFFSET = 100
+const SCROLL_CHECK_INTERVAL = 50
+const SCROLL_CHECK_TIMEOUT = 1000
 
-const categoryId = ref(route.params.category);
-const articleId = ref(route.params.id);
+const route = useRoute()
 
-const article = computed(() => getArticleById(categoryId.value, articleId.value));
+const categoryId = ref(route.params.category)
+const articleId = ref(route.params.id)
+const articleContent = ref('')
+const isHtmlContent = ref(false)
+const isLoading = ref(true)
+const contentRef = ref(null)
+const headings = ref([])
+const activeHeadingId = ref('')
+
+let observer = null
+let scrollListener = null
+let isManualTocClick = false
+
+const article = computed(() => getArticleById(categoryId.value, articleId.value))
 
 useArticleSeo(article)
-
-const articleContent = ref('');
-const isHtmlContent = ref(false);
-const contentRef = ref(null);
-const headings = ref([]);
-const activeHeadingId = ref('');
-
-let observer = null;
-let scrollListener = null;
-let isManualTocClick = false;
 
 const extractHeadings = () => {
   if (!contentRef.value) return [];
@@ -90,25 +101,24 @@ const extractHeadings = () => {
 
 const scrollToHeading = (id) => {
   const element = document.getElementById(id);
-  if (element) {
-    isManualTocClick = true;
-    const offsetTop = element.getBoundingClientRect().top + window.scrollY - 80;
-    window.scrollTo({top: offsetTop, behavior: 'smooth'});
-    const checkScrollEnd = setInterval(() => {
-      if (!window.scrollY || Math.abs(window.scrollY - (offsetTop)) < 2) {
-        isManualTocClick = false;
-        clearInterval(checkScrollEnd);
-      }
-    }, 50);
-    setTimeout(() => {
+  if (!element) return;
+  isManualTocClick = true;
+  const offsetTop = element.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
+  window.scrollTo({top: offsetTop, behavior: 'smooth'});
+  const checkScrollEnd = setInterval(() => {
+    if (!window.scrollY || Math.abs(window.scrollY - offsetTop) < 2) {
       isManualTocClick = false;
       clearInterval(checkScrollEnd);
-    }, 1000);
-  }
+    }
+  }, SCROLL_CHECK_INTERVAL);
+  setTimeout(() => {
+    isManualTocClick = false;
+    clearInterval(checkScrollEnd);
+  }, SCROLL_CHECK_TIMEOUT);
 };
 
 const updateActiveHeading = () => {
-  const scrollPos = window.scrollY + 100;
+  const scrollPos = window.scrollY + SCROLL_POSITION_OFFSET;
   let currentHeading = '';
   for (let i = headings.value.length - 1; i >= 0; i--) {
     const el = document.getElementById(headings.value[i].id);
@@ -126,20 +136,8 @@ const setupScrollObserver = () => {
   window.addEventListener('scroll', scrollListener, {passive: true});
 };
 
-watch(activeHeadingId, (newId) => {
-  if (!newId || isManualTocClick) return;
-  const tocLink = document.querySelector(`.toc-item a[href="#${newId}"]`);
-  if (tocLink) {
-    tocLink.scrollIntoView({block: 'nearest', behavior: 'smooth'});
-  }
-});
-
-onBeforeUnmount(() => {
-  if (observer) observer.disconnect();
-  if (scrollListener) window.removeEventListener('scroll', scrollListener);
-});
-
 const loadArticleContent = async () => {
+  isLoading.value = true;
   try {
     headings.value = [];
     activeHeadingId.value = '';
@@ -153,13 +151,22 @@ const loadArticleContent = async () => {
       setupScrollObserver();
     }
   } catch (error) {
-    console.error('加载文章内容失败:', error);
     articleContent.value = `<h1>${article.value?.title || '文章不存在'}</h1><p>文章内容加载失败: ${error.message}</p>`;
     isHtmlContent.value = false;
     await nextTick();
     headings.value = extractHeadings();
+  } finally {
+    isLoading.value = false;
   }
 };
+
+watch(activeHeadingId, (newId) => {
+  if (!newId || isManualTocClick) return;
+  const tocLink = document.querySelector(`.toc-item a[href="#${newId}"]`);
+  if (tocLink) {
+    tocLink.scrollIntoView({block: 'nearest', behavior: 'smooth'});
+  }
+});
 
 watch(
     [() => route.params.category, () => route.params.id],
@@ -172,6 +179,11 @@ watch(
 
 onMounted(() => {
   loadArticleContent();
+});
+
+onBeforeUnmount(() => {
+  if (observer) observer.disconnect();
+  if (scrollListener) window.removeEventListener('scroll', scrollListener);
 });
 </script>
 
@@ -288,6 +300,31 @@ onMounted(() => {
 .article-main {
   flex: 1;
   min-width: 0;
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2xl);
+  color: var(--color-text-secondary);
+  gap: var(--spacing-md);
+}
+
+.loading-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .no-toc {

@@ -1,5 +1,5 @@
 import {createRouter, createWebHistory} from 'vue-router'
-import {getCategoryName} from '../data/articles'
+import {getCategoryName} from '@/data/articles'
 
 const routes = [
     {
@@ -65,6 +65,16 @@ const routes = [
         component: () => import('../views/ArticleDetail.vue'),
         meta: {
             seo: 'article'
+        }
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        name: 'NotFound',
+        component: () => import('../views/NotFound.vue'),
+        meta: {
+            title: '页面未找到 - Hello Blog',
+            description: '您访问的页面不存在',
+            keywords: '404,页面未找到'
         }
     }
 ]

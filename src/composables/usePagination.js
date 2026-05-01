@@ -1,3 +1,8 @@
+/**
+ * 分页组合式函数
+ * 提供列表数据的排序、分页功能
+ */
+
 import {computed, ref} from 'vue';
 
 const PAGE_SIZE = 10;

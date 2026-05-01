@@ -1,4 +1,9 @@
-import {watch, onUnmounted} from 'vue'
+/**
+ * SEO 组合式函数
+ * 提供页面 SEO 元信息管理、结构化数据生成等功能
+ */
+
+import {onUnmounted, watch} from 'vue'
 import {useRoute} from 'vue-router'
 
 let _active = false
