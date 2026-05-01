@@ -144,6 +144,7 @@ const loadArticleContent = async () => {
     const content = await getArticleContent(categoryId.value, articleId.value);
     isHtmlContent.value = content.startsWith('<!DOCTYPE html>') || content.startsWith('<html');
     articleContent.value = content;
+    isLoading.value = false;
     await nextTick();
     headings.value = extractHeadings();
     if (headings.value.length > 0) {
@@ -153,10 +154,9 @@ const loadArticleContent = async () => {
   } catch (error) {
     articleContent.value = `<h1>${article.value?.title || '文章不存在'}</h1><p>文章内容加载失败: ${error.message}</p>`;
     isHtmlContent.value = false;
+    isLoading.value = false;
     await nextTick();
     headings.value = extractHeadings();
-  } finally {
-    isLoading.value = false;
   }
 };
 
