@@ -160,6 +160,7 @@ const loadArticleContent = async () => {
 
 watch(activeHeadingId, (newId) => {
   if (!newId || isManualTocClick) return;
+  if (window.innerWidth <= 768) return;
   const tocLink = document.querySelector(`.toc-item a[href="#${newId}"]`);
   if (tocLink) {
     tocLink.scrollIntoView({block: 'nearest', behavior: 'smooth'});
@@ -510,42 +511,7 @@ onBeforeUnmount(() => {
   }
 
   .toc-sidebar {
-    width: 100%;
-    position: static;
-    max-height: none;
-    order: -1;
-  }
-
-  .toc-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--spacing-xs);
-  }
-
-  .toc-item {
-    margin: 0;
-  }
-
-  .toc-link {
-    border-left: none;
-    padding: var(--spacing-xs) var(--spacing-sm);
-    border-radius: var(--radius-sm);
-    background-color: var(--color-bg-tag);
-  }
-
-  .toc-level-2 .toc-link,
-  .toc-level-3 .toc-link,
-  .toc-level-4 .toc-link,
-  .toc-level-5 .toc-link,
-  .toc-level-6 .toc-link {
-    padding-left: var(--spacing-sm);
-    font-size: var(--font-size-xs);
-  }
-
-  .toc-item.active > .toc-link {
-    background-color: var(--color-primary);
-    color: white;
-    border-left: none;
+    display: none;
   }
 
   .article-content {
