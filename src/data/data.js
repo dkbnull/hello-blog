@@ -1,46 +1,48 @@
 /**
  * 博客基础数据
- * 包含分类信息和文章列表数据
+ * 分类与文章列表由 vite-plugin-articles-scanner 自动扫描生成
+ *
+ * 新增文章：将 {id}_{title}.html|md 放入 public/articles/{分类}/ 目录
+ * 新增分类：在 public/articles/categories.json 添加配置，图标放入 public/icons/ 目录
  */
 
-import frontendIcon from '@/assets/frontend.svg';
-import backendIcon from '@/assets/backend.svg';
+import { articles as scannedArticles, categories as scannedCategories } from 'virtual:articles-manifest';
+import defaultImage from '@/assets/default.svg';
 
-export const categoriesData = [
-    {id: 'frontend', name: '前端开发', icon: '💻'},
-    {id: 'backend', name: '后端开发', icon: '🖥️'},
-];
+// 分类图标统一存放在 public/icons/ 下
+// categories.json 中的 image 字段填写文件名（如 java.png），运行时解析为 /icons/java.png
+const ICON_BASE = '/icons/';
 
-export const articlesData = {
-    frontend: [
-        {
-            id: '1',
-            title: 'Vue 3 新特性详解',
-            category: 'frontend',
-            tags: ['Vue', '前端', 'JavaScript'],
-            date: '2023-05-15',
-            author: '张三',
-            image: frontendIcon
-        },
-        {
-            id: '2',
-            title: 'TypeScript 入门指南',
-            category: 'frontend',
-            tags: ['TypeScript', '前端', 'JavaScript'],
-            date: '2023-06-20',
-            author: '李四',
-            image: frontendIcon
-        }
-    ],
-    backend: [
-        {
-            id: '3',
-            title: 'Node.js 性能优化技巧',
-            category: 'backend',
-            tags: ['Node.js', '后端', '性能优化'],
-            date: '2023-07-10',
-            author: '王五',
-            image: backendIcon
-        }
-    ]
+const resolveCategoryImage = (imageField) => {
+  if (!imageField) return defaultImage;
+  // 若已是绝对路径或 / 开头的 public 路径，直接使用
+  if (imageField.startsWith('/') || /^https?:\/\//.test(imageField)) {
+    return imageField;
+  }
+  return ICON_BASE + imageField;
 };
+
+// 分类数据：合并扫描结果与图片资源
+export const categoriesData = scannedCategories.map(category => ({
+  id: category.id,
+  name: category.name,
+  icon: category.icon,
+  image: resolveCategoryImage(category.image)
+}));
+
+// 文章数据：合并扫描结果与分类级别的图片、tags
+export const articlesData = Object.fromEntries(
+  categoriesData.map(category => {
+    const categoryArticles = scannedArticles[category.id] || [];
+    const categoryConfig = scannedCategories.find(c => c.id === category.id) || {};
+    const fallbackTags = categoryConfig.tags || [];
+
+    const enrichedArticles = categoryArticles.map(article => ({
+      ...article,
+      image: resolveCategoryImage(categoryConfig.image),
+      tags: article.tags?.length ? article.tags : [...fallbackTags]
+    }));
+
+    return [category.id, enrichedArticles];
+  })
+);

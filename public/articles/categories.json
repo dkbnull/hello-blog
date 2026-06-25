@@ -1,0 +1,6 @@
+{
+  "categories": [
+    {"id": "frontend", "name": "前端开发", "icon": "💻", "image": "frontend.svg", "tags": ["前端"]},
+    {"id": "backend", "name": "后端开发", "icon": "🖥️", "image": "backend.svg", "tags": ["后端"]}
+  ]
+}
