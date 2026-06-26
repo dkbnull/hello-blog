@@ -45,7 +45,10 @@ const categories = getCategories();
   position: sticky;
   top: calc(var(--header-height) + var(--spacing-md));
   align-self: flex-start;
-  height: fit-content;
+  /* 限制最大高度为视口可用区域，超出时菜单区域滚动 */
+  max-height: calc(100vh - var(--header-height) - var(--spacing-md) * 2);
+  display: flex;
+  flex-direction: column;
   box-shadow: 0 2px 10px var(--color-shadow);
   transition: background-color var(--transition-normal), border-color var(--transition-normal);
 }
@@ -56,12 +59,25 @@ const categories = getCategories();
   margin-bottom: var(--spacing-lg);
   font-size: 1.2rem;
   font-weight: 600;
+  flex-shrink: 0;
 }
 
 .sidebar-menu {
   list-style: none;
   padding: 0;
   margin: 0;
+  /* 菜单区域可滚动，标题保持固定 */
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  min-height: 0;
+  scrollbar-width: none; /* Firefox 隐藏滚动条 */
+  -ms-overflow-style: none; /* IE/Edge 隐藏滚动条 */
+}
+
+/* WebKit 内核浏览器隐藏滚动条 */
+.sidebar-menu::-webkit-scrollbar {
+  display: none;
 }
 
 .sidebar-menu li {
@@ -115,12 +131,18 @@ const categories = getCategories();
   .sidebar {
     width: 100%;
     position: static;
+    /* 移动端不限制高度，使用横向 flex 布局 */
+    max-height: none;
+    display: block;
   }
 
   .sidebar-menu {
     display: flex;
     flex-wrap: wrap;
     gap: var(--spacing-sm);
+    /* 移动端取消垂直滚动 */
+    overflow-y: visible;
+    flex: none;
   }
 
   .sidebar-menu li {

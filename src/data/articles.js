@@ -85,8 +85,15 @@ export const getArticleContent = async (categoryId, articleId) => {
     const htmlResponse = await fetch(htmlPath);
     if (htmlResponse.ok) {
       const content = await htmlResponse.text();
-      articleContentCache.set(cacheKey, content);
-      return content;
+      // 重写 HTML 文章中图片的相对路径为绝对路径
+      // 原始路径形如 ./assets/xxx.assets/yyy.png，是相对于文章 HTML 文件所在目录的
+      // 在 SPA 路由下浏览器会按当前 URL 解析，导致 404，需统一替换为 /articles/{categoryId}/assets/
+      const rewrittenContent = content.replace(
+        /(\bsrc|href)\s*=\s*(['"])\.\/assets\//gi,
+        `$1=$2/articles/${categoryId}/assets/`
+      );
+      articleContentCache.set(cacheKey, rewrittenContent);
+      return rewrittenContent;
     }
 
     const mdPath = buildArticlePath(categoryId, articleId, article.title, 'md');
