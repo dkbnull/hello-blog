@@ -4,11 +4,16 @@
     <ul class="sidebar-menu">
       <li v-for="category in categories" :key="category.id">
         <router-link
-            :to="`/category/${category.id}`"
-            class="sidebar-link"
-            :class="{ active: activeCategory === category.id }"
+          :to="`/category/${category.id}`"
+          class="sidebar-link"
+          :class="{ active: activeCategory === category.id }"
         >
-          <span class="icon">{{ category.icon }}</span>
+          <img
+            v-if="category.icon"
+            :src="category.icon"
+            :alt="category.name"
+            class="icon"
+          />
           <span class="name">{{ category.name }}</span>
           <span class="count">{{ getArticleCount(category.id) }}</span>
         </router-link>
@@ -18,7 +23,7 @@
 </template>
 
 <script setup>
-import {getArticleCount, getCategories} from '@/data/articles';
+import { getArticleCount, getCategories } from '@/data/articles';
 
 defineProps({
   activeCategory: {
@@ -89,9 +94,11 @@ const categories = getCategories();
 }
 
 .sidebar-link .icon {
-  font-size: 1.1rem;
   width: 20px;
-  text-align: center;
+  height: 20px;
+  object-fit: contain;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
 }
 
 .count {

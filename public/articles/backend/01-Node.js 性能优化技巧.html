@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TypeScript 入门指南 | 个人博客</title>
+    <title>Node.js 性能优化技巧 | 个人博客</title>
     <style>
         * {
             margin: 0;
@@ -124,42 +124,23 @@
 <body>
 <div class="container">
     <div class="article-content">
-        <h1 class="article-title">TypeScript 入门指南</h1>
-        <div class="article-meta">
-            <span class="article-date">2023-06-20</span>
-            <span class="article-author">作者: 李四</span>
-            <span class="article-category">分类: 前端开发</span>
-        </div>
-        <div class="article-tags">
-            <span class="tag">TypeScript</span>
-            <span class="tag">前端</span>
-            <span class="tag">JavaScript</span>
-        </div>
         <div class="article-body">
-            <h1>TypeScript 入门指南</h1>
-            <p>TypeScript 是 JavaScript 的超集，它添加了静态类型检查和其他高级特性，使代码更加健壮和可维护。</p>
-            <h2>类型系统</h2>
-            <p>TypeScript 的核心特性是其类型系统，它允许我们为变量、函数参数和返回值指定类型。</p>
-            <div class="code-block" data-language="typescript">
-          <pre><code>// 基本类型
-let isDone: boolean = false;
-let age: number = 18;
-let name: string = "张三";
-
-// 接口
-interface Person {
-  name: string;
-  age: number;
-}
-
-// 函数
-function greet(person: Person): string {
-  return `Hello, ${person.name}!`;
-}
-</code></pre>
-            </div>
-            <h2>泛型</h2>
-            <p>泛型允许我们编写可重用的代码，适用于多种类型。</p>
+            <h1>Node.js 性能优化技巧</h1>
+            <p>Node.js 是一个基于 Chrome V8 引擎的 JavaScript 运行时，用于构建高性能的网络应用。本文将介绍一些 Node.js
+                性能优化的技巧。</p>
+            <h2>代码优化</h2>
+            <ol>
+                <li>使用异步 I/O</li>
+                <li>避免同步操作</li>
+                <li>使用合适的数据结构</li>
+                <li>优化内存使用</li>
+            </ol>
+            <h2>工具和监控</h2>
+            <ol>
+                <li>使用 PM2 进行进程管理</li>
+                <li>使用 New Relic 或 Datadog 进行监控</li>
+                <li>使用 Node.js 内置的 profiler 进行性能分析</li>
+            </ol>
         </div>
     </div>
 </div>

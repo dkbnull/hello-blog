@@ -6,10 +6,10 @@
           <h3 class="toc-title">目录</h3>
           <ul class="toc-list">
             <li
-                v-for="heading in headings"
-                :key="heading.id"
-                class="toc-item"
-                :class="['toc-level-' + heading.level, { active: activeHeadingId === heading.id }]"
+              v-for="heading in headings"
+              :key="heading.id"
+              class="toc-item"
+              :class="['toc-level-' + heading.level, { active: activeHeadingId === heading.id }]"
             >
               <a :href="'#' + heading.id" class="toc-link" @click.prevent="scrollToHeading(heading.id)">{{
                   heading.text
@@ -24,28 +24,35 @@
           <p>文章加载中...</p>
         </div>
         <template v-else>
-          <div v-if="isHtmlContent" ref="contentRef" class="html-content" v-html="articleContent"></div>
-          <article v-else class="article-content card">
+          <article class="article-content card">
             <h1 class="article-title">{{ article?.title }}</h1>
             <div class="article-meta">
               <span>{{ article?.date }}</span>
+              <span v-if="article?.author" class="meta-separator">·</span>
+              <span v-if="article?.author">{{ article.author }}</span>
               <span class="meta-separator">·</span>
               <router-link :to="`/category/${article?.category}`" class="meta-category">
                 {{ getCategoryName(article?.category) }}
               </router-link>
+              <template v-if="article?.tags?.length">
+                <span class="meta-separator">·</span>
+                <span class="meta-tags">
+                  <span v-for="tag in article.tags" :key="tag" class="tag">{{ tag }}</span>
+                </span>
+              </template>
             </div>
-            <div ref="contentRef" class="article-body" v-html="articleContent"></div>
+            <div ref="contentRef" class="article-body" :class="{ 'html-body': isHtmlContent }"
+                 v-html="articleContent"></div>
           </article>
         </template>
-        <router-link to="/" class="back-link">← 返回首页</router-link>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import {getArticleById, getArticleContent, getCategoryName} from '@/data/articles';
-import {useArticleSeo} from '@/composables/useSeo';
+import { getArticleById, getArticleContent, getCategoryName } from '@/data/articles';
+import { useArticleSeo } from '@/composables/useSeo';
 
 const HEADER_OFFSET = 80
 const SCROLL_POSITION_OFFSET = 100
@@ -102,7 +109,7 @@ const scrollToHeading = (id) => {
   if (!element) return;
   isManualTocClick = true;
   const offsetTop = element.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
-  window.scrollTo({top: offsetTop, behavior: 'smooth'});
+  window.scrollTo({ top: offsetTop, behavior: 'smooth' });
   const checkScrollEnd = setInterval(() => {
     if (!window.scrollY || Math.abs(window.scrollY - offsetTop) < 2) {
       isManualTocClick = false;
@@ -131,7 +138,69 @@ const updateActiveHeading = () => {
 const setupScrollObserver = () => {
   window.removeEventListener('scroll', scrollListener);
   scrollListener = () => updateActiveHeading();
-  window.addEventListener('scroll', scrollListener, {passive: true});
+  window.addEventListener('scroll', scrollListener, { passive: true });
+};
+
+// 从完整 HTML 文档中提取 body 内容（保留内联样式）
+const extractHtmlBody = (html) => {
+  const bodyMatch = html.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+  if (!bodyMatch) return html;
+  let body = bodyMatch[1];
+  // 提取 head 中的 style 标签，注入到 body 内容中
+  const styleMatches = html.match(/<style[^>]*>[\s\S]*?<\/style>/gi);
+  if (styleMatches) {
+    body = styleMatches.join('\n') + body;
+  }
+  return body;
+};
+
+// 动态加载 Mermaid 库（仅在有 Mermaid 图表时加载，避免增加首屏体积）
+const MERMAID_CDN = 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js';
+let mermaidLoadingPromise = null;
+
+const loadMermaid = () => {
+  if (window.mermaid) return Promise.resolve(window.mermaid);
+  if (mermaidLoadingPromise) return mermaidLoadingPromise;
+
+  mermaidLoadingPromise = new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = MERMAID_CDN;
+    script.async = true;
+    script.onload = () => {
+      if (window.mermaid) {
+        // securityLevel: 'loose' 允许 HTML 标签等，适配 Typora 导出的图表
+        window.mermaid.initialize({ startOnLoad: false, theme: 'default', securityLevel: 'loose' });
+        resolve(window.mermaid);
+      } else {
+        reject(new Error('Mermaid 库加载失败'));
+      }
+    };
+    script.onerror = () => {
+      mermaidLoadingPromise = null;
+      reject(new Error('Mermaid 库加载失败'));
+    };
+    document.head.appendChild(script);
+  });
+  return mermaidLoadingPromise;
+};
+
+// 渲染文章内容中的 Mermaid 图表
+const renderMermaid = async () => {
+  if (!contentRef.value) return;
+  const mermaidElements = contentRef.value.querySelectorAll('.mermaid:not([data-processed])');
+  if (mermaidElements.length === 0) return;
+
+  try {
+    const mermaid = await loadMermaid();
+    // 为每个 mermaid 容器分配唯一 id，避免重复渲染冲突
+    const stamp = Date.now();
+    mermaidElements.forEach((el, idx) => {
+      if (!el.id) el.id = `mermaid-${stamp}-${idx}`;
+    });
+    await mermaid.run({ nodes: Array.from(mermaidElements) });
+  } catch (error) {
+    console.warn('Mermaid 渲染失败:', error);
+  }
 };
 
 const loadArticleContent = async () => {
@@ -141,14 +210,27 @@ const loadArticleContent = async () => {
     activeHeadingId.value = '';
     const content = await getArticleContent(categoryId.value, articleId.value);
     isHtmlContent.value = content.startsWith('<!DOCTYPE html>') || content.startsWith('<html');
-    articleContent.value = content;
+    // 对 HTML 文章：提取 body 内容，隐藏自带的标题和 meta（由组件统一渲染）
+    if (isHtmlContent.value) {
+      articleContent.value = extractHtmlBody(content);
+    } else {
+      articleContent.value = content;
+    }
     isLoading.value = false;
     await nextTick();
+    // 隐藏 HTML 文章中自带的标题和 meta（组件已统一渲染）
+    if (isHtmlContent.value && contentRef.value) {
+      contentRef.value.querySelectorAll('.article-title, .article-meta').forEach(el => {
+        el.style.display = 'none';
+      });
+    }
     headings.value = extractHeadings();
     if (headings.value.length > 0) {
       activeHeadingId.value = headings.value[0].id;
       setupScrollObserver();
     }
+    // 内容渲染完成后处理 Mermaid 图表
+    await renderMermaid();
   } catch (error) {
     articleContent.value = `<h1>${article.value?.title || '文章不存在'}</h1><p>文章内容加载失败: ${error.message}</p>`;
     isHtmlContent.value = false;
@@ -163,17 +245,17 @@ watch(activeHeadingId, (newId) => {
   if (window.innerWidth <= 768) return;
   const tocLink = document.querySelector(`.toc-item a[href="#${newId}"]`);
   if (tocLink) {
-    tocLink.scrollIntoView({block: 'nearest', behavior: 'smooth'});
+    tocLink.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   }
 });
 
 watch(
-    [() => route.params.category, () => route.params.id],
-    ([newCategory, newId]) => {
-      categoryId.value = newCategory;
-      articleId.value = newId;
-      loadArticleContent();
-    }
+  [() => route.params.category, () => route.params.id],
+  ([newCategory, newId]) => {
+    categoryId.value = newCategory;
+    articleId.value = newId;
+    loadArticleContent();
+  }
 );
 
 onMounted(() => {
@@ -188,7 +270,7 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .article-detail {
-  padding: var(--spacing-xl) 0;
+  padding: var(--spacing-md) 0;
   background-color: var(--color-bg);
   min-height: calc(100vh - var(--header-height));
   transition: background-color var(--transition-normal);
@@ -205,8 +287,9 @@ onBeforeUnmount(() => {
   width: 220px;
   flex-shrink: 0;
   position: sticky;
-  top: calc(var(--header-height) + var(--spacing-lg));
-  max-height: calc(100vh - var(--header-height) - var(--spacing-xl) * 2);
+  /* top = header 高度 + 页面 padding-top，保证滚动时目录顶部留白恒定 */
+  top: calc(var(--header-height) + var(--spacing-md));
+  max-height: calc(100vh - var(--header-height) - var(--spacing-md) * 2);
   overflow-y: auto;
 }
 
@@ -335,7 +418,7 @@ onBeforeUnmount(() => {
 }
 
 .article-content {
-  padding: var(--spacing-xl);
+  padding: var(--spacing-lg) var(--spacing-xl);
 }
 
 .article-content:hover {
@@ -353,9 +436,11 @@ onBeforeUnmount(() => {
 .article-meta {
   font-size: 0.875rem;
   color: var(--color-text-secondary);
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: var(--spacing-sm);
   display: flex;
   justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
   gap: var(--spacing-sm);
 }
 
@@ -370,6 +455,20 @@ onBeforeUnmount(() => {
 
 .meta-category:hover {
   text-decoration: underline;
+}
+
+.meta-tags {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+}
+
+.meta-tags .tag {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+  padding: 0.1rem 0.5rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.7rem;
 }
 
 .article-body {
@@ -442,67 +541,89 @@ onBeforeUnmount(() => {
   background-color: var(--color-bg-code);
 }
 
-.back-link {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  background-color: var(--color-primary);
-  color: white;
-  padding: var(--spacing-sm) var(--spacing-md);
-  margin: var(--spacing-md) 0;
-  border-radius: var(--radius-sm);
-  text-decoration: none;
-  font-size: 0.875rem;
-  font-weight: 500;
-  transition: background-color var(--transition-normal);
-}
-
-.back-link:hover {
-  background-color: var(--color-primary-hover);
-  text-decoration: none;
-}
-
-.html-content {
-  width: 100%;
-  min-height: calc(100vh - 120px);
-  overflow: hidden;
-  color: var(--color-text);
-}
-
-.html-content :deep(.container) {
+/* HTML 文章样式覆盖 */
+.html-body :deep(.container) {
   max-width: 100%;
   margin: 0;
   padding: 0;
 }
 
-.html-content :deep(.article-content) {
-  background-color: var(--color-bg-card);
-  border-radius: var(--radius-md);
-  box-shadow: 0 2px 4px var(--color-shadow);
-  padding: var(--spacing-xl);
+.html-body :deep(.article-content) {
+  background-color: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
 }
 
-.html-content :deep(code) {
+.html-body :deep(.article-body) {
+  margin-bottom: 0;
+}
+
+/* 覆盖 Typora 导出 HTML 中 #write 的默认 padding，减小正文上下留白 */
+.html-body :deep(#write) {
+  padding: 0;
+  max-width: 100%;
+}
+
+/* 覆盖 HTML 文章中的硬编码颜色，适配暗色模式 */
+.html-body :deep(h1),
+.html-body :deep(h2),
+.html-body :deep(h3),
+.html-body :deep(h4),
+.html-body :deep(h5),
+.html-body :deep(h6) {
+  color: var(--color-text);
+  scroll-margin-top: 80px;
+}
+
+.html-body :deep(p),
+.html-body :deep(li),
+.html-body :deep(td),
+.html-body :deep(th) {
+  color: var(--color-text);
+}
+
+.html-body :deep(code) {
   background-color: var(--color-bg-code);
   padding: 0.2em 0.4em;
   border-radius: var(--radius-sm);
   font-family: var(--font-mono);
 }
 
-.html-content :deep(pre) {
+.html-body :deep(pre) {
   background-color: var(--color-bg-code);
   padding: var(--spacing-md);
   border-radius: var(--radius-sm);
   overflow-x: auto;
 }
 
-.html-content :deep(h1),
-.html-content :deep(h2),
-.html-content :deep(h3),
-.html-content :deep(h4),
-.html-content :deep(h5),
-.html-content :deep(h6) {
-  scroll-margin-top: 80px;
+.html-body :deep(pre code) {
+  background-color: transparent;
+  padding: 0;
+}
+
+.html-body :deep(blockquote) {
+  border-left: 4px solid var(--color-primary);
+  padding-left: var(--spacing-md);
+  margin: var(--spacing-md) 0;
+  color: var(--color-text-secondary);
+}
+
+.html-body :deep(table) {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: var(--spacing-md);
+}
+
+.html-body :deep(th),
+.html-body :deep(td) {
+  border: 1px solid var(--color-border);
+  padding: var(--spacing-sm) var(--spacing-md);
+  text-align: left;
+}
+
+.html-body :deep(th) {
+  background-color: var(--color-bg-code);
 }
 
 @media (max-width: 768px) {

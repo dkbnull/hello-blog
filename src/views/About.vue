@@ -8,14 +8,14 @@
         <h2 class="section-title">{{ section.title }}</h2>
         <div class="link-grid">
           <a
-              v-for="link in section.links"
-              :key="link.name"
-              :href="link.url"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="link-card card"
+            v-for="link in section.links"
+            :key="link.name"
+            :href="link.url"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="link-card card"
           >
-            <img :src="link.icon" :alt="link.name" class="link-icon"/>
+            <img :src="link.icon" :alt="link.name" class="link-icon" />
             <span>{{ link.name }}</span>
           </a>
         </div>
@@ -25,7 +25,7 @@
         <h2 class="section-title">微信公众号</h2>
         <div class="qrcode-wrapper">
           <div class="qrcode-card card">
-            <img :src="weixinImage" alt="微信二维码" class="qrcode-image"/>
+            <img :src="weixinImage" alt="微信二维码" class="qrcode-image" />
           </div>
         </div>
       </section>
@@ -40,16 +40,18 @@ const linkSections = [
   {
     title: '仓库地址',
     links: [
-      {name: 'GitHub', url: 'https://github.com/dkbnull/hello-blog', icon: 'https://github.com/favicon.ico'},
-      {name: 'Gitee', url: 'https://gitee.com/dkbnull/hello-blog', icon: 'https://gitee.com/favicon.ico'},
+      { name: 'GitHub', url: 'https://github.com/dkbnull/hello-blog', icon: 'https://github.com/favicon.ico' },
+      { name: 'Gitee', url: 'https://gitee.com/dkbnull/hello-blog', icon: 'https://gitee.com/favicon.ico' },
+      { name: 'GitHub · 知识库', url: 'https://github.com/dkbnull/hello-wiki', icon: 'https://github.com/favicon.ico' },
+      { name: 'Gitee · 知识库', url: 'https://gitee.com/dkbnull/hello-wiki', icon: 'https://gitee.com/favicon.ico' },
     ],
   },
   {
     title: '友链',
     links: [
-      {name: '主站', url: 'https://www.wbnull.cn', icon: 'https://www.wbnull.cn/favicon.svg'},
-      {name: '工具', url: 'https://tool.wbnull.cn', icon: 'https://tool.wbnull.cn/favicon.svg'},
-      {name: '游戏', url: 'https://game.wbnull.cn', icon: 'https://game.wbnull.cn/favicon.svg'},
+      { name: '主站', url: 'https://www.wbnull.cn', icon: 'https://www.wbnull.cn/favicon.svg' },
+      { name: '工具', url: 'https://tool.wbnull.cn', icon: 'https://tool.wbnull.cn/favicon.svg' },
+      { name: '游戏', url: 'https://game.wbnull.cn', icon: 'https://game.wbnull.cn/favicon.svg' },
     ],
   },
   {

@@ -1,9 +1,10 @@
 {
   "articles": {
-    "3": {
+    "01": {
       "date": "2023-07-10",
       "author": "王五",
-      "tags": ["Node.js", "后端", "性能优化"]
+      "tags": ["Node.js", "后端", "性能优化"],
+      "image": "nodejs.svg"
     }
   }
 }

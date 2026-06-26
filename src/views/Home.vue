@@ -2,11 +2,11 @@
   <div class="home">
     <div class="container">
       <div class="page-layout">
-        <Sidebar :active-category="activeCategory"/>
+        <Sidebar :active-category="activeCategory" />
         <main class="page-content">
           <div class="page-content-header">
             <h2 class="page-title">{{ pageTitle }}</h2>
-            <SortControl :sort-order="sortOrder" @change="setSortOrder"/>
+            <SortControl :sort-order="sortOrder" @change="setSortOrder" />
           </div>
 
           <div v-if="sortedItems.length === 0" class="empty-state">
@@ -19,9 +19,9 @@
 
           <template v-else>
             <div class="posts-container">
-              <PostCard v-for="post in pagedItems" :key="`${post.category}-${post.id}`" :post="post"/>
+              <PostCard v-for="post in pagedItems" :key="`${post.category}-${post.id}`" :post="post" />
             </div>
-            <Pagination v-model:current-page="currentPage" :total-pages="totalPages"/>
+            <Pagination v-model:current-page="currentPage" :total-pages="totalPages" />
           </template>
         </main>
       </div>
@@ -30,8 +30,8 @@
 </template>
 
 <script setup>
-import {getAllArticles, getArticlesByCategory, getCategoryName} from '@/data/articles';
-import {usePagination} from '@/composables/usePagination';
+import { getAllArticles, getArticlesByCategory, getCategoryName } from '@/data/articles';
+import { usePagination } from '@/composables/usePagination';
 
 const route = useRoute();
 const activeCategory = ref('');
@@ -50,12 +50,20 @@ const allPosts = computed(() => {
   return getAllArticles();
 });
 
-const {currentPage, sortOrder, sortedItems, totalPages, pagedItems, setSortOrder, resetPage} = usePagination(allPosts);
+const {
+  currentPage,
+  sortOrder,
+  sortedItems,
+  totalPages,
+  pagedItems,
+  setSortOrder,
+  resetPage
+} = usePagination(allPosts);
 
 watch(() => route.params.category, (newCategory) => {
   activeCategory.value = newCategory || '';
   resetPage();
-}, {immediate: true});
+}, { immediate: true });
 
 onMounted(() => {
   activeCategory.value = route.params.category || '';
@@ -64,6 +72,6 @@ onMounted(() => {
 
 <style scoped>
 .home {
-  padding: var(--spacing-xl) 0;
+  padding: var(--spacing-md) 0;
 }
 </style>

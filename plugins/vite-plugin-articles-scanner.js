@@ -3,7 +3,7 @@
  * 在 dev/build 时扫描 public/articles 目录，结合 categories.json 配置
  * 生成虚拟模块 virtual:articles-manifest，供 data.js 消费
  *
- * 文章文件命名规则：{id}_{title}.{html|md}
+ * 文章文件命名规则：{id}-{title}.{html|md}
  *   - id: 文章在分类下的唯一标识（如 01、02）
  *   - title: 文章标题
  *
@@ -32,10 +32,10 @@ function formatDate(date) {
 
 /**
  * 从文件名解析文章 id 和 title
- * 规则：{id}_{title}.{ext}
+ * 规则：{id}-{title}.{ext}
  */
 function parseFileName(fileName) {
-  const match = fileName.match(/^(\d+)_(.+)\.(html|md)$/i)
+  const match = fileName.match(/^(\d+)-(.+)\.(html|md)$/i)
   if (!match) return null
   return {
     id: match[1],
@@ -129,8 +129,7 @@ function generateManifest(articlesRoot) {
     categories.push({
       id: cat.id,
       name: cat.name,
-      icon: cat.icon || '📄',
-      image: cat.image || '',
+      icon: cat.icon || '',
       tags: cat.tags || []
     })
 

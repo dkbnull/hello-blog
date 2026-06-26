@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Node.js 性能优化技巧 | 个人博客</title>
+    <title>Vue 3 新特性详解 | 个人博客</title>
     <style>
         * {
             margin: 0;
@@ -124,34 +124,38 @@
 <body>
 <div class="container">
     <div class="article-content">
-        <h1 class="article-title">Node.js 性能优化技巧</h1>
-        <div class="article-meta">
-            <span class="article-date">2023-07-10</span>
-            <span class="article-author">作者: 王五</span>
-            <span class="article-category">分类: 后端开发</span>
-        </div>
-        <div class="article-tags">
-            <span class="tag">Node.js</span>
-            <span class="tag">后端</span>
-            <span class="tag">性能优化</span>
-        </div>
         <div class="article-body">
-            <h1>Node.js 性能优化技巧</h1>
-            <p>Node.js 是一个基于 Chrome V8 引擎的 JavaScript 运行时，用于构建高性能的网络应用。本文将介绍一些 Node.js
-                性能优化的技巧。</p>
-            <h2>代码优化</h2>
-            <ol>
-                <li>使用异步 I/O</li>
-                <li>避免同步操作</li>
-                <li>使用合适的数据结构</li>
-                <li>优化内存使用</li>
-            </ol>
-            <h2>工具和监控</h2>
-            <ol>
-                <li>使用 PM2 进行进程管理</li>
-                <li>使用 New Relic 或 Datadog 进行监控</li>
-                <li>使用 Node.js 内置的 profiler 进行性能分析</li>
-            </ol>
+            <h1>Vue 3 新特性详解</h1>
+            <p>Vue 3 带来了许多令人兴奋的新特性，包括组合式 API、Teleport、Suspense
+                等。本文将详细介绍这些新特性的使用方法和优势。</p>
+            <h2>组合式 API</h2>
+            <p>组合式 API 是 Vue 3 中最显著的变化之一，它允许我们按照逻辑关注点组织代码，而不是按照选项类型。</p>
+            <div class="code-block" data-language="javascript">
+          <pre><code>// 使用组合式 API
+import { ref, computed } from 'vue'
+
+export default {
+  setup() {
+    const count = ref(0)
+    const doubleCount = computed(() => count.value * 2)
+
+    function increment() {
+      count.value++
+    }
+
+    return {
+      count,
+      doubleCount,
+      increment
+    }
+  }
+}
+</code></pre>
+            </div>
+            <h2>Teleport</h2>
+            <p>Teleport 允许我们将组件的内容渲染到 DOM 树中的任何位置，这对于模态框、通知等组件非常有用。</p>
+            <h2>Suspense</h2>
+            <p>Suspense 允许我们在组件加载完成前显示占位内容，提供更好的用户体验。</p>
         </div>
     </div>
 </div>
