@@ -1,7 +1,10 @@
 <template>
   <aside class="sidebar">
     <h2 class="sidebar-title">分类</h2>
-    <ul class="sidebar-menu">
+    <div v-if="isLoading" class="sidebar-loading">
+      <div class="loading-spinner-small"></div>
+    </div>
+    <ul v-else class="sidebar-menu">
       <li v-for="category in categories" :key="category.id">
         <router-link
           :to="`/category/${category.id}`"
@@ -23,7 +26,7 @@
 </template>
 
 <script setup>
-import { getArticleCount, getCategories } from '@/data/articles';
+import { getArticleCount, getCategories, loading } from '@/data/articles';
 
 defineProps({
   activeCategory: {
@@ -32,7 +35,9 @@ defineProps({
   }
 });
 
-const categories = getCategories();
+// 数据为运行时异步加载，通过 computed 响应数据变化
+const categories = computed(() => getCategories());
+const isLoading = computed(() => loading.value);
 </script>
 
 <style scoped>
@@ -60,6 +65,27 @@ const categories = getCategories();
   font-size: 1.2rem;
   font-weight: 600;
   flex-shrink: 0;
+}
+
+.sidebar-loading {
+  display: flex;
+  justify-content: center;
+  padding: var(--spacing-lg);
+}
+
+.loading-spinner-small {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .sidebar-menu {

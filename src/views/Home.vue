@@ -9,7 +9,11 @@
             <SortControl :sort-order="sortOrder" @change="setSortOrder" />
           </div>
 
-          <div v-if="sortedItems.length === 0" class="empty-state">
+          <div v-if="isLoading" class="loading-state">
+            <div class="loading-spinner"></div>
+            <p>加载中...</p>
+          </div>
+          <div v-else-if="sortedItems.length === 0" class="empty-state">
             <p v-if="activeCategory">该分类下没有文章</p>
             <template v-else>
               <p>欢迎来到 Hello Blog！</p>
@@ -30,11 +34,13 @@
 </template>
 
 <script setup>
-import { getAllArticles, getArticlesByCategory, getCategoryName } from '@/data/articles';
+import { getAllArticles, getArticlesByCategory, getCategoryName, loading } from '@/data/articles';
 import { usePagination } from '@/composables/usePagination';
 
 const route = useRoute();
 const activeCategory = ref('');
+
+const isLoading = computed(() => loading.value);
 
 const pageTitle = computed(() => {
   if (activeCategory.value) {
@@ -73,5 +79,30 @@ onMounted(() => {
 <style scoped>
 .home {
   padding: var(--spacing-md) 0;
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2xl);
+  color: var(--color-text-secondary);
+  gap: var(--spacing-md);
+}
+
+.loading-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

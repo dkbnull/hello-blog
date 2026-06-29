@@ -1,33 +1,36 @@
 /**
  * 文章数据服务层
  * 提供文章的查询、搜索、内容加载等功能
+ * 数据源为 data.js 中的响应式 ref，组件通过 computed 消费可自动响应数据变化
  */
 
-import { articlesData, categoriesData } from "@/data/data.js";
+import { articlesData, categoriesData, loading, loaded, loadArticlesData } from "@/data/data.js";
 
 const articleContentCache = new Map();
 
-export const getCategories = () => categoriesData;
+export { loadArticlesData, loading, loaded };
+
+export const getCategories = () => categoriesData.value;
 
 export const getCategoryName = (categoryId) => {
-  const category = categoriesData.find(c => c.id === categoryId);
+  const category = categoriesData.value.find(c => c.id === categoryId);
   return category ? category.name : categoryId;
 };
 
 export const getArticleCount = (categoryId) => {
-  return (articlesData[categoryId] || []).length;
+  return (articlesData.value[categoryId] || []).length;
 };
 
 export const getArticlesByCategory = (categoryId) => {
-  return articlesData[categoryId] || [];
+  return articlesData.value[categoryId] || [];
 };
 
 export const getAllArticles = () => {
-  return Object.values(articlesData).flat();
+  return Object.values(articlesData.value).flat();
 };
 
 export const getArticleById = (categoryId, articleId) => {
-  const articles = articlesData[categoryId] || [];
+  const articles = articlesData.value[categoryId] || [];
   return articles.find(article => article.id === articleId);
 };
 
@@ -81,7 +84,8 @@ export const getArticleContent = async (categoryId, articleId) => {
       return errorContent;
     }
 
-    const htmlPath = buildArticlePath(categoryId, articleId, article.title, 'html');
+    const extension = article.ext || 'html';
+    const htmlPath = buildArticlePath(categoryId, articleId, article.title, extension);
     const htmlResponse = await fetch(htmlPath);
     if (htmlResponse.ok) {
       const content = await htmlResponse.text();
@@ -96,14 +100,17 @@ export const getArticleContent = async (categoryId, articleId) => {
       return rewrittenContent;
     }
 
-    const mdPath = buildArticlePath(categoryId, articleId, article.title, 'md');
-    const mdResponse = await fetch(mdPath);
-    if (mdResponse.ok) {
-      const mdContent = await mdResponse.text();
-      const { marked } = await import('marked');
-      const htmlContent = marked(mdContent);
-      articleContentCache.set(cacheKey, htmlContent);
-      return htmlContent;
+    // 如果配置的是 html 但加载失败，尝试 md 格式
+    if (extension === 'html') {
+      const mdPath = buildArticlePath(categoryId, articleId, article.title, 'md');
+      const mdResponse = await fetch(mdPath);
+      if (mdResponse.ok) {
+        const mdContent = await mdResponse.text();
+        const { marked } = await import('marked');
+        const htmlContent = marked(mdContent);
+        articleContentCache.set(cacheKey, htmlContent);
+        return htmlContent;
+      }
     }
 
     const defaultContent = generateErrorContent(article.title, '文章内容加载失败，请检查文件是否存在。');

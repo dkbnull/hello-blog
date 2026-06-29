@@ -5,7 +5,6 @@ import VueDevTools from 'vite-plugin-vue-devtools'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import vitePluginSeoAnalytics from './plugins/vite-plugin-seo-analytics'
-import vitePluginArticlesScanner from './plugins/vite-plugin-articles-scanner'
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd())
@@ -51,8 +50,7 @@ export default defineConfig(({ mode }) => {
         keywords: '技术博客,Java,Spring Boot,Docker,Vue,Android,Redis,Linux',
         baId: env.VITE_BA_ID || '',
         searchAction: 'https://blog.wbnull.cn/search?q={search_term_string}'
-      }),
-      vitePluginArticlesScanner()
+      })
     ]
   }
 })

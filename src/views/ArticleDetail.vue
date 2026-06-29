@@ -51,7 +51,7 @@
 </template>
 
 <script setup>
-import { getArticleById, getArticleContent, getCategoryName } from '@/data/articles';
+import { getArticleById, getArticleContent, getCategoryName, loadArticlesData, loaded } from '@/data/articles';
 import { useArticleSeo } from '@/composables/useSeo';
 
 const HEADER_OFFSET = 80
@@ -205,6 +205,10 @@ const renderMermaid = async () => {
 
 const loadArticleContent = async () => {
   isLoading.value = true;
+  // 确保文章清单数据已加载完成，否则 getArticleById 找不到文章
+  if (!loaded.value) {
+    await loadArticlesData();
+  }
   try {
     headings.value = [];
     activeHeadingId.value = '';
