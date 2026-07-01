@@ -478,6 +478,9 @@ onBeforeUnmount(() => {
 .article-body {
   line-height: 1.8;
   color: var(--color-text);
+  overflow-x: auto;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 .article-body :deep(h1),
@@ -509,6 +512,13 @@ onBeforeUnmount(() => {
   border-radius: var(--radius-sm);
   overflow-x: auto;
   font-family: var(--font-mono);
+  max-width: 100%;
+}
+
+.article-body :deep(.codehilite),
+.article-body :deep(table) {
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 .article-body :deep(pre code) {
@@ -599,6 +609,17 @@ onBeforeUnmount(() => {
   padding: var(--spacing-md);
   border-radius: var(--radius-sm);
   overflow-x: auto;
+  max-width: 100%;
+}
+
+.html-body :deep(.codehilite) {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.html-body :deep(.codehilite pre) {
+  overflow-x: auto;
+  max-width: 100%;
 }
 
 .html-body :deep(pre code) {
@@ -617,6 +638,8 @@ onBeforeUnmount(() => {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: var(--spacing-md);
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 .html-body :deep(th),
@@ -632,7 +655,7 @@ onBeforeUnmount(() => {
 
 @media (max-width: 768px) {
   .article-layout {
-    flex-direction: column;
+    gap: var(--spacing-md);
   }
 
   .toc-sidebar {
@@ -640,10 +663,17 @@ onBeforeUnmount(() => {
   }
 
   .article-content {
+    padding: var(--spacing-md) var(--spacing-sm);
   }
 
   .article-title {
     font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .article-content {
+    padding: var(--spacing-sm) var(--spacing-xs);
   }
 }
 </style>
