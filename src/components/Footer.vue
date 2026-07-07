@@ -37,6 +37,12 @@
   color: var(--color-text-secondary);
 }
 
+.footer-bottom p,
+.footer-bottom a {
+  margin: 0;
+  font-family: var(--font-sans), serif;
+}
+
 .records {
   display: flex;
   gap: var(--spacing-md);
