@@ -3,14 +3,14 @@
     <button class="page-btn" :disabled="currentPage === 1" @click="changePage(1)" title="首页">
       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="11 17 6 12 11 7"/>
-        <polyline points="18 17 13 12 18 7"/>
+        <polyline points="11 17 6 12 11 7" />
+        <polyline points="18 17 13 12 18 7" />
       </svg>
     </button>
     <button class="page-btn" :disabled="currentPage === 1" @click="changePage(currentPage - 1)" title="上一页">
       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="15 18 9 12 15 6"/>
+        <polyline points="15 18 9 12 15 6" />
       </svg>
     </button>
     <template v-for="page in visiblePages" :key="page">
@@ -22,62 +22,62 @@
     <button class="page-btn" :disabled="currentPage === totalPages" @click="changePage(currentPage + 1)" title="下一页">
       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="9 18 15 12 9 6"/>
+        <polyline points="9 18 15 12 9 6" />
       </svg>
     </button>
     <button class="page-btn" :disabled="currentPage === totalPages" @click="changePage(totalPages)" title="末页">
       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="13 17 18 12 13 7"/>
-        <polyline points="6 17 11 12 6 7"/>
+        <polyline points="13 17 18 12 13 7" />
+        <polyline points="6 17 11 12 6 7" />
       </svg>
     </button>
   </div>
 </template>
 
 <script setup>
-const currentPage = defineModel('currentPage', {type: Number, required: true});
+const currentPage = defineModel('currentPage', { type: Number, required: true })
 
 const props = defineProps({
-  totalPages: {type: Number, required: true},
-  maxVisible: {type: Number, default: 5}
-});
+  totalPages: { type: Number, required: true },
+  maxVisible: { type: Number, default: 5 }
+})
 
 const visiblePages = computed(() => {
-  const total = props.totalPages;
-  const current = currentPage.value;
-  const max = props.maxVisible;
+  const total = props.totalPages
+  const current = currentPage.value
+  const max = props.maxVisible
 
   if (total <= max + 2) {
-    return Array.from({length: total}, (_, i) => i + 1);
+    return Array.from({ length: total }, (_, i) => i + 1)
   }
 
-  const pages = [];
-  const half = Math.floor(max / 2);
-  let start = Math.max(2, current - half);
-  let end = Math.min(total - 1, current + half);
+  const pages = []
+  const half = Math.floor(max / 2)
+  let start = Math.max(2, current - half)
+  let end = Math.min(total - 1, current + half)
 
   if (current - half < 2) {
-    end = Math.min(total - 1, max + 1);
+    end = Math.min(total - 1, max + 1)
   }
   if (current + half > total - 1) {
-    start = Math.max(2, total - max);
+    start = Math.max(2, total - max)
   }
 
-  pages.push(1);
-  if (start > 2) pages.push('...');
-  for (let i = start; i <= end; i++) pages.push(i);
-  if (end < total - 1) pages.push('...');
-  pages.push(total);
+  pages.push(1)
+  if (start > 2) pages.push('...')
+  for (let i = start; i <= end; i++) pages.push(i)
+  if (end < total - 1) pages.push('...')
+  pages.push(total)
 
-  return pages;
-});
+  return pages
+})
 
 const changePage = (page) => {
   if (page >= 1 && page <= props.totalPages && page !== currentPage.value) {
-    currentPage.value = page;
+    currentPage.value = page
   }
-};
+}
 </script>
 
 <style scoped>

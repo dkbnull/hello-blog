@@ -27,8 +27,8 @@
 </template>
 
 <script setup>
-import { getCategoryName } from '@/data/articles';
-import defaultImage from '@/assets/default.svg';
+import { getCategoryName } from '@/data/articles'
+import defaultImage from '@/assets/default.svg'
 
 const props = defineProps({
   post: {
@@ -40,33 +40,33 @@ const props = defineProps({
     type: Boolean,
     default: true
   }
-});
+})
 
-const router = useRouter();
+const router = useRouter()
 
-const postLink = computed(() => `/article/${props.post.category}/${props.post.id}`);
-const target = computed(() => props.openInNewTab ? '_blank' : '_self');
+const postLink = computed(() => `/article/${props.post.category}/${props.post.id}`)
+const target = computed(() => props.openInNewTab ? '_blank' : '_self')
 
 // 点击分类标签时，跳转到分类页（避免触发卡片整体跳转）
 const goCategory = () => {
-  if (!props.post.category) return;
+  if (!props.post.category) return
   // 新标签页打开时，分类也使用新标签页打开以保持一致体验
-  const url = router.resolve(`/category/${props.post.category}`).href;
+  const url = router.resolve(`/category/${props.post.category}`).href
   if (props.openInNewTab) {
-    window.open(url, '_blank', 'noopener,noreferrer');
+    window.open(url, '_blank', 'noopener,noreferrer')
   } else {
-    router.push(`/category/${props.post.category}`);
+    router.push(`/category/${props.post.category}`)
   }
-};
+}
 
 const excerpt = computed(() => {
-  if (!props.post.content) return '点击查看文章内容...';
+  if (!props.post.content) return '点击查看文章内容...'
   const plainText = props.post.content
     .replace(/#{1,6}\s/g, '')
     .replace(/```[\s\S]*?```/g, '')
-    .replace(/\n/g, ' ');
-  return plainText.length > 150 ? plainText.substring(0, 150) + '...' : plainText;
-});
+    .replace(/\n/g, ' ')
+  return plainText.length > 150 ? plainText.substring(0, 150) + '...' : plainText
+})
 </script>
 
 <style scoped>

@@ -34,27 +34,27 @@
 </template>
 
 <script setup>
-import { getAllArticles, getArticlesByCategory, getCategoryName, loading } from '@/data/articles';
-import { usePagination } from '@/composables/usePagination';
+import { getAllArticles, getArticlesByCategory, getCategoryName, loading } from '@/data/articles'
+import { usePagination } from '@/composables/usePagination'
 
-const route = useRoute();
-const activeCategory = ref('');
+const route = useRoute()
+const activeCategory = ref('')
 
-const isLoading = computed(() => loading.value);
+const isLoading = computed(() => loading.value)
 
 const pageTitle = computed(() => {
   if (activeCategory.value) {
-    return `${getCategoryName(activeCategory.value)} 文章`;
+    return `${getCategoryName(activeCategory.value)} 文章`
   }
-  return '最新文章';
-});
+  return '最新文章'
+})
 
 const allPosts = computed(() => {
   if (activeCategory.value) {
-    return getArticlesByCategory(activeCategory.value);
+    return getArticlesByCategory(activeCategory.value)
   }
-  return getAllArticles();
-});
+  return getAllArticles()
+})
 
 const {
   currentPage,
@@ -64,45 +64,20 @@ const {
   pagedItems,
   setSortOrder,
   resetPage
-} = usePagination(allPosts);
+} = usePagination(allPosts)
 
 watch(() => route.params.category, (newCategory) => {
-  activeCategory.value = newCategory || '';
-  resetPage();
-}, { immediate: true });
+  activeCategory.value = newCategory || ''
+  resetPage()
+}, { immediate: true })
 
 onMounted(() => {
-  activeCategory.value = route.params.category || '';
-});
+  activeCategory.value = route.params.category || ''
+})
 </script>
 
 <style scoped>
 .home {
   padding: var(--spacing-md) 0;
-}
-
-.loading-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-2xl);
-  color: var(--color-text-secondary);
-  gap: var(--spacing-md);
-}
-
-.loading-spinner {
-  width: 36px;
-  height: 36px;
-  border: 3px solid var(--color-border);
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
 }
 </style>

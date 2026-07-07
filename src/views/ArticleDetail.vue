@@ -51,8 +51,8 @@
 </template>
 
 <script setup>
-import { getArticleById, getArticleContent, getCategoryName, loadArticlesData, loaded } from '@/data/articles';
-import { useArticleSeo } from '@/composables/useSeo';
+import { getArticleById, getArticleContent, getCategoryName, loadArticlesData, loaded } from '@/data/articles'
+import { useArticleSeo } from '@/composables/useSeo'
 
 const HEADER_OFFSET = 80
 const SCROLL_POSITION_OFFSET = 100
@@ -70,214 +70,220 @@ const contentRef = ref(null)
 const headings = ref([])
 const activeHeadingId = ref('')
 
-let observer = null
 let scrollListener = null
 let isManualTocClick = false
+let scrollCheckInterval = null
+let scrollCheckTimeout = null
 
 const article = computed(() => getArticleById(categoryId.value, articleId.value))
 
 useArticleSeo(article)
 
 const extractHeadings = () => {
-  if (!contentRef.value) return [];
-  const headingElements = contentRef.value.querySelectorAll('h1, h2, h3, h4, h5, h6');
-  const result = [];
-  const idCountMap = {};
+  if (!contentRef.value) return []
+  const headingElements = contentRef.value.querySelectorAll('h1, h2, h3, h4, h5, h6')
+  const result = []
+  const idCountMap = {}
   headingElements.forEach((el) => {
-    let id = el.id;
+    let id = el.id
     if (!id) {
-      id = el.textContent.trim().replace(/\s+/g, '-').toLowerCase();
+      id = el.textContent.trim().replace(/\s+/g, '-').toLowerCase()
     }
     if (idCountMap[id] !== undefined) {
-      idCountMap[id]++;
-      id = `${id}-${idCountMap[id]}`;
+      idCountMap[id]++
+      id = `${id}-${idCountMap[id]}`
     } else {
-      idCountMap[id] = 0;
+      idCountMap[id] = 0
     }
-    el.id = id;
+    el.id = id
     result.push({
       id,
       level: parseInt(el.tagName.charAt(1)),
       text: el.textContent.trim()
-    });
-  });
-  return result;
-};
+    })
+  })
+  return result
+}
 
 const scrollToHeading = (id) => {
-  const element = document.getElementById(id);
-  if (!element) return;
-  isManualTocClick = true;
-  const offsetTop = element.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
-  window.scrollTo({ top: offsetTop, behavior: 'smooth' });
-  const checkScrollEnd = setInterval(() => {
+  const element = document.getElementById(id)
+  if (!element) return
+  isManualTocClick = true
+  const offsetTop = element.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET
+  window.scrollTo({ top: offsetTop, behavior: 'smooth' })
+
+  // 清除上次未完成的滚动检测，避免多次点击导致定时器累积
+  if (scrollCheckInterval) clearInterval(scrollCheckInterval)
+  if (scrollCheckTimeout) clearTimeout(scrollCheckTimeout)
+
+  scrollCheckInterval = setInterval(() => {
     if (!window.scrollY || Math.abs(window.scrollY - offsetTop) < 2) {
-      isManualTocClick = false;
-      clearInterval(checkScrollEnd);
+      isManualTocClick = false
+      clearInterval(scrollCheckInterval)
+      scrollCheckInterval = null
     }
-  }, SCROLL_CHECK_INTERVAL);
-  setTimeout(() => {
-    isManualTocClick = false;
-    clearInterval(checkScrollEnd);
-  }, SCROLL_CHECK_TIMEOUT);
-};
+  }, SCROLL_CHECK_INTERVAL)
+  scrollCheckTimeout = setTimeout(() => {
+    isManualTocClick = false
+    clearInterval(scrollCheckInterval)
+    scrollCheckInterval = null
+  }, SCROLL_CHECK_TIMEOUT)
+}
 
 const updateActiveHeading = () => {
-  const scrollPos = window.scrollY + SCROLL_POSITION_OFFSET;
-  let currentHeading = '';
+  const scrollPos = window.scrollY + SCROLL_POSITION_OFFSET
+  let currentHeading = ''
   for (let i = headings.value.length - 1; i >= 0; i--) {
-    const el = document.getElementById(headings.value[i].id);
+    const el = document.getElementById(headings.value[i].id)
     if (el && el.offsetTop <= scrollPos) {
-      currentHeading = headings.value[i].id;
-      break;
+      currentHeading = headings.value[i].id
+      break
     }
   }
-  activeHeadingId.value = currentHeading;
-};
+  activeHeadingId.value = currentHeading
+}
 
 const setupScrollObserver = () => {
-  window.removeEventListener('scroll', scrollListener);
-  scrollListener = () => updateActiveHeading();
-  window.addEventListener('scroll', scrollListener, { passive: true });
-};
+  window.removeEventListener('scroll', scrollListener)
+  scrollListener = () => updateActiveHeading()
+  window.addEventListener('scroll', scrollListener, { passive: true })
+}
 
 // 从完整 HTML 文档中提取 body 内容（保留内联样式）
 const extractHtmlBody = (html) => {
-  const bodyMatch = html.match(/<body[^>]*>([\s\S]*)<\/body>/i);
-  if (!bodyMatch) return html;
-  let body = bodyMatch[1];
+  const bodyMatch = html.match(/<body[^>]*>([\s\S]*)<\/body>/i)
+  if (!bodyMatch) return html
+  let body = bodyMatch[1]
   // 提取 head 中的 style 标签，注入到 body 内容中
-  const styleMatches = html.match(/<style[^>]*>[\s\S]*?<\/style>/gi);
+  const styleMatches = html.match(/<style[^>]*>[\s\S]*?<\/style>/gi)
   if (styleMatches) {
-    body = styleMatches.join('\n') + body;
+    body = styleMatches.join('\n') + body
   }
-  return body;
-};
+  return body
+}
 
 // 动态加载 Mermaid 库（仅在有 Mermaid 图表时加载，避免增加首屏体积）
-const MERMAID_CDN = 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js';
-let mermaidLoadingPromise = null;
+const MERMAID_CDN = 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js'
+let mermaidLoadingPromise = null
 
 const loadMermaid = () => {
-  if (window.mermaid) return Promise.resolve(window.mermaid);
-  if (mermaidLoadingPromise) return mermaidLoadingPromise;
+  if (window.mermaid) return Promise.resolve(window.mermaid)
+  if (mermaidLoadingPromise) return mermaidLoadingPromise
 
   mermaidLoadingPromise = new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = MERMAID_CDN;
-    script.async = true;
+    const script = document.createElement('script')
+    script.src = MERMAID_CDN
+    script.async = true
     script.onload = () => {
       if (window.mermaid) {
         // securityLevel: 'loose' 允许 HTML 标签等，适配 Typora 导出的图表
-        window.mermaid.initialize({ startOnLoad: false, theme: 'default', securityLevel: 'loose' });
-        resolve(window.mermaid);
+        window.mermaid.initialize({ startOnLoad: false, theme: 'default', securityLevel: 'loose' })
+        resolve(window.mermaid)
       } else {
-        reject(new Error('Mermaid 库加载失败'));
+        reject(new Error('Mermaid 库加载失败'))
       }
-    };
+    }
     script.onerror = () => {
-      mermaidLoadingPromise = null;
-      reject(new Error('Mermaid 库加载失败'));
-    };
-    document.head.appendChild(script);
-  });
-  return mermaidLoadingPromise;
-};
+      mermaidLoadingPromise = null
+      reject(new Error('Mermaid 库加载失败'))
+    }
+    document.head.appendChild(script)
+  })
+  return mermaidLoadingPromise
+}
 
 // 渲染文章内容中的 Mermaid 图表
 const renderMermaid = async () => {
-  if (!contentRef.value) return;
-  const mermaidElements = contentRef.value.querySelectorAll('.mermaid:not([data-processed])');
-  if (mermaidElements.length === 0) return;
+  if (!contentRef.value) return
+  const mermaidElements = contentRef.value.querySelectorAll('.mermaid:not([data-processed])')
+  if (mermaidElements.length === 0) return
 
   try {
-    const mermaid = await loadMermaid();
+    const mermaid = await loadMermaid()
     // 为每个 mermaid 容器分配唯一 id，避免重复渲染冲突
-    const stamp = Date.now();
+    const stamp = Date.now()
     mermaidElements.forEach((el, idx) => {
-      if (!el.id) el.id = `mermaid-${stamp}-${idx}`;
-    });
-    await mermaid.run({ nodes: Array.from(mermaidElements) });
+      if (!el.id) el.id = `mermaid-${stamp}-${idx}`
+    })
+    await mermaid.run({ nodes: Array.from(mermaidElements) })
   } catch (error) {
-    console.warn('Mermaid 渲染失败:', error);
+    console.warn('Mermaid 渲染失败:', error)
   }
-};
+}
 
 const loadArticleContent = async () => {
-  isLoading.value = true;
+  isLoading.value = true
   // 确保文章清单数据已加载完成，否则 getArticleById 找不到文章
   if (!loaded.value) {
-    await loadArticlesData();
+    await loadArticlesData()
   }
   try {
-    headings.value = [];
-    activeHeadingId.value = '';
-    const content = await getArticleContent(categoryId.value, articleId.value);
-    isHtmlContent.value = content.startsWith('<!DOCTYPE html>') || content.startsWith('<html');
+    headings.value = []
+    activeHeadingId.value = ''
+    const content = await getArticleContent(categoryId.value, articleId.value)
+    isHtmlContent.value = content.startsWith('<!DOCTYPE html>') || content.startsWith('<html')
     // 对 HTML 文章：提取 body 内容，隐藏自带的标题和 meta（由组件统一渲染）
     if (isHtmlContent.value) {
-      articleContent.value = extractHtmlBody(content);
+      articleContent.value = extractHtmlBody(content)
     } else {
-      articleContent.value = content;
+      articleContent.value = content
     }
-    isLoading.value = false;
-    await nextTick();
+    isLoading.value = false
+    await nextTick()
     // 隐藏 HTML 文章中自带的标题和 meta（组件已统一渲染）
     if (isHtmlContent.value && contentRef.value) {
       contentRef.value.querySelectorAll('.article-title, .article-meta').forEach(el => {
-        el.style.display = 'none';
-      });
+        el.style.display = 'none'
+      })
     }
-    headings.value = extractHeadings();
+    headings.value = extractHeadings()
     if (headings.value.length > 0) {
-      activeHeadingId.value = headings.value[0].id;
-      setupScrollObserver();
+      activeHeadingId.value = headings.value[0].id
+      setupScrollObserver()
     }
     // 内容渲染完成后处理 Mermaid 图表
-    await renderMermaid();
+    await renderMermaid()
   } catch (error) {
-    articleContent.value = `<h1>${article.value?.title || '文章不存在'}</h1><p>文章内容加载失败: ${error.message}</p>`;
-    isHtmlContent.value = false;
-    isLoading.value = false;
-    await nextTick();
-    headings.value = extractHeadings();
+    articleContent.value = `<h1>${article.value?.title || '文章不存在'}</h1><p>文章内容加载失败: ${error.message}</p>`
+    isHtmlContent.value = false
+    isLoading.value = false
+    await nextTick()
+    headings.value = extractHeadings()
   }
-};
+}
 
 watch(activeHeadingId, (newId) => {
-  if (!newId || isManualTocClick) return;
-  if (window.innerWidth <= 768) return;
-  const tocLink = document.querySelector(`.toc-item a[href="#${newId}"]`);
+  if (!newId || isManualTocClick) return
+  if (window.innerWidth <= 768) return
+  const tocLink = document.querySelector(`.toc-item a[href="#${newId}"]`)
   if (tocLink) {
-    tocLink.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    tocLink.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
   }
-});
+})
 
 watch(
   [() => route.params.category, () => route.params.id],
   ([newCategory, newId]) => {
-    categoryId.value = newCategory;
-    articleId.value = newId;
-    loadArticleContent();
+    categoryId.value = newCategory
+    articleId.value = newId
+    loadArticleContent()
   }
-);
+)
 
 onMounted(() => {
-  loadArticleContent();
-});
+  loadArticleContent()
+})
 
 onBeforeUnmount(() => {
-  if (observer) observer.disconnect();
-  if (scrollListener) window.removeEventListener('scroll', scrollListener);
-});
+  if (scrollCheckInterval) clearInterval(scrollCheckInterval)
+  if (scrollCheckTimeout) clearTimeout(scrollCheckTimeout)
+  if (scrollListener) window.removeEventListener('scroll', scrollListener)
+})
 </script>
 
 <style scoped>
 .article-detail {
   padding: var(--spacing-md) 0;
-  background-color: var(--color-bg);
-  min-height: calc(100vh - var(--header-height));
-  transition: background-color var(--transition-normal);
 }
 
 .article-layout {
@@ -386,31 +392,6 @@ onBeforeUnmount(() => {
 .article-main {
   flex: 1;
   min-width: 0;
-}
-
-.loading-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-2xl);
-  color: var(--color-text-secondary);
-  gap: var(--spacing-md);
-}
-
-.loading-spinner {
-  width: 36px;
-  height: 36px;
-  border: 3px solid var(--color-border);
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
 }
 
 .no-toc {
@@ -555,7 +536,7 @@ onBeforeUnmount(() => {
   background-color: var(--color-bg-code);
 }
 
-/* HTML 文章样式覆盖 */
+/* HTML 文章样式覆盖：仅保留与 .article-body 的差异部分 */
 .html-body :deep(.container) {
   max-width: 100%;
   margin: 0;
@@ -580,16 +561,6 @@ onBeforeUnmount(() => {
 }
 
 /* 覆盖 HTML 文章中的硬编码颜色，适配暗色模式 */
-.html-body :deep(h1),
-.html-body :deep(h2),
-.html-body :deep(h3),
-.html-body :deep(h4),
-.html-body :deep(h5),
-.html-body :deep(h6) {
-  color: var(--color-text);
-  scroll-margin-top: 80px;
-}
-
 .html-body :deep(p),
 .html-body :deep(li),
 .html-body :deep(td),
@@ -597,60 +568,9 @@ onBeforeUnmount(() => {
   color: var(--color-text);
 }
 
-.html-body :deep(code) {
-  background-color: var(--color-bg-code);
-  padding: 0.2em 0.4em;
-  border-radius: var(--radius-sm);
-  font-family: var(--font-mono);
-}
-
+/* HTML 文章的 pre 需要内边距（Markdown 渲染的 pre 不需要） */
 .html-body :deep(pre) {
-  background-color: var(--color-bg-code);
   padding: var(--spacing-md);
-  border-radius: var(--radius-sm);
-  overflow-x: auto;
-  max-width: 100%;
-}
-
-.html-body :deep(.codehilite) {
-  max-width: 100%;
-  overflow-x: auto;
-}
-
-.html-body :deep(.codehilite pre) {
-  overflow-x: auto;
-  max-width: 100%;
-}
-
-.html-body :deep(pre code) {
-  background-color: transparent;
-  padding: 0;
-}
-
-.html-body :deep(blockquote) {
-  border-left: 4px solid var(--color-primary);
-  padding-left: var(--spacing-md);
-  margin: var(--spacing-md) 0;
-  color: var(--color-text-secondary);
-}
-
-.html-body :deep(table) {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: var(--spacing-md);
-  max-width: 100%;
-  overflow-x: auto;
-}
-
-.html-body :deep(th),
-.html-body :deep(td) {
-  border: 1px solid var(--color-border);
-  padding: var(--spacing-sm) var(--spacing-md);
-  text-align: left;
-}
-
-.html-body :deep(th) {
-  background-color: var(--color-bg-code);
 }
 
 @media (max-width: 768px) {

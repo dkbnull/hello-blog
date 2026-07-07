@@ -2,11 +2,11 @@
   <div class="search-page">
     <div class="container">
       <div class="page-layout">
-        <Sidebar :active-category="''"/>
+        <Sidebar :active-category="''" />
         <main class="page-content">
           <div class="page-content-header">
             <h2 class="page-title">搜索结果</h2>
-            <SortControl v-if="keyword && results.length > 0" :sort-order="sortOrder" @change="setSortOrder"/>
+            <SortControl v-if="keyword && results.length > 0" :sort-order="sortOrder" @change="setSortOrder" />
           </div>
 
           <div v-if="keyword" class="search-info">
@@ -27,9 +27,9 @@
 
           <template v-if="results.length > 0">
             <div class="posts-container">
-              <PostCard v-for="post in pagedItems" :key="`${post.category}-${post.id}`" :post="post"/>
+              <PostCard v-for="post in pagedItems" :key="`${post.category}-${post.id}`" :post="post" />
             </div>
-            <Pagination v-model:current-page="currentPage" :total-pages="totalPages"/>
+            <Pagination v-model:current-page="currentPage" :total-pages="totalPages" />
           </template>
         </main>
       </div>
@@ -38,22 +38,22 @@
 </template>
 
 <script setup>
-import {searchArticles} from '@/data/articles';
-import {usePagination} from '@/composables/usePagination';
+import { searchArticles } from '@/data/articles'
+import { usePagination } from '@/composables/usePagination'
 
-const route = useRoute();
-const keyword = ref('');
+const route = useRoute()
+const keyword = ref('')
 
 const results = computed(() => {
-  return searchArticles(keyword.value);
-});
+  return searchArticles(keyword.value)
+})
 
-const {currentPage, sortOrder, totalPages, pagedItems, setSortOrder, resetPage} = usePagination(results);
+const { currentPage, sortOrder, totalPages, pagedItems, setSortOrder, resetPage } = usePagination(results)
 
 watch(() => route.query.q, (newQ) => {
-  keyword.value = newQ || '';
-  resetPage();
-}, {immediate: true});
+  keyword.value = newQ || ''
+  resetPage()
+}, { immediate: true })
 </script>
 
 <style scoped>
