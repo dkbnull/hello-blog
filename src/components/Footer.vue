@@ -23,9 +23,11 @@
 
 <style scoped>
 .footer {
-  background-color: var(--color-bg-footer);
-  border-top: 1px solid var(--color-border);
-  padding: var(--spacing-md) 0 var(--spacing-md);
+  position: relative;
+  background: var(--background-secondary);
+  border-top: 1px solid var(--glass-border);
+  box-shadow: inset 0 1px 0 rgba(66, 184, 131, 0.2);
+  padding: var(--spacing-md) 0;
   margin-top: auto;
 }
 
@@ -34,13 +36,8 @@
   justify-content: space-between;
   align-items: center;
   font-size: var(--font-size-xs);
-  color: var(--color-text-secondary);
-}
-
-.footer-bottom p,
-.footer-bottom a {
-  margin: 0;
-  font-family: var(--font-sans), serif;
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
 }
 
 .records {
@@ -50,16 +47,19 @@
 
 .record-link {
   font-size: var(--font-size-xs);
-  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
   text-decoration: none;
-  transition: var(--transition-fast);
+  transition: var(--transition);
   display: inline-flex;
   align-items: center;
   gap: 4px;
 }
 
 .record-link:hover {
-  color: var(--color-primary);
+  color: var(--primary-color);
+  text-shadow: 0 0 8px var(--glow-cyan);
+  text-decoration: none;
 }
 
 .record-icon {

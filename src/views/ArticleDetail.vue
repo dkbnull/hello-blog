@@ -304,21 +304,38 @@ onBeforeUnmount(() => {
 }
 
 .toc {
-  background-color: var(--color-bg-card);
-  border-radius: var(--radius-md);
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: var(--radius-lg);
   padding: var(--spacing-lg);
-  border: 1px solid var(--color-border);
-  box-shadow: 0 2px 8px var(--color-shadow);
-  transition: background-color var(--transition-normal), border-color var(--transition-normal);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow);
+  transition: var(--transition-normal);
 }
 
 .toc-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
   font-size: var(--font-size-lg);
-  font-weight: 600;
-  color: var(--color-primary);
+  font-weight: 700;
+  color: var(--text-color);
   margin: 0 0 var(--spacing-md) 0;
   padding-bottom: var(--spacing-sm);
-  border-bottom: 2px solid var(--color-primary);
+  border-bottom: 1px solid var(--glass-border);
+  letter-spacing: -0.01em;
+}
+
+/* 状态脉冲点 */
+.toc-title::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  box-shadow: 0 0 8px var(--glow-cyan);
 }
 
 .toc-list {
@@ -335,29 +352,33 @@ onBeforeUnmount(() => {
 .toc-link {
   display: block;
   padding: var(--spacing-xs) 0;
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
   text-decoration: none;
   font-size: var(--font-size-sm);
+  font-family: var(--font-mono);
   line-height: 1.5;
   border-left: 2px solid transparent;
   padding-left: var(--spacing-sm);
-  transition: all var(--transition-fast);
+  transition: var(--transition);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .toc-link:hover {
-  color: var(--color-primary);
+  color: var(--primary-color);
   text-decoration: none;
-  border-left-color: var(--color-primary-light);
-  background-color: var(--color-primary-light);
+  border-left-color: var(--primary-color);
+  background: var(--primary-light);
+  text-shadow: 0 0 8px var(--glow-cyan);
 }
 
 .toc-item.active > .toc-link {
-  color: var(--color-primary);
+  color: var(--primary-color);
   font-weight: 600;
-  border-left-color: var(--color-primary);
+  border-left-color: var(--primary-color);
+  background: var(--primary-light);
+  text-shadow: 0 0 8px var(--glow-cyan);
 }
 
 .toc-level-1 .toc-link {
@@ -402,44 +423,63 @@ onBeforeUnmount(() => {
   max-width: 100%;
 }
 
+/* ===== 文章内容卡片（复用全局 .card） ===== */
 .article-content {
+  position: relative;
   padding: var(--spacing-lg) var(--spacing-xl);
+  border: 0;
 }
 
 .article-content:hover {
   transform: none;
-  box-shadow: 0 2px 4px var(--color-shadow);
+  box-shadow: var(--shadow);
+}
+
+.article-content:hover::after {
+  transform: scaleY(0);
 }
 
 .article-title {
   font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   margin-bottom: var(--spacing-md);
-  color: var(--color-text);
+  color: var(--text-color);
   text-align: center;
 }
 
 .article-meta {
-  font-size: 0.875rem;
-  color: var(--color-text-secondary);
-  margin-bottom: var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-md);
   display: flex;
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
   gap: var(--spacing-sm);
+  border-bottom: 1px dashed var(--glass-border);
 }
 
 .meta-separator {
-  color: var(--color-text-tertiary);
+  color: var(--text-tertiary);
+  opacity: 0.5;
 }
 
 .meta-category {
-  color: var(--color-primary);
+  color: var(--primary-color);
   text-decoration: none;
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--primary-light);
+  border: 1px solid transparent;
+  transition: var(--transition);
 }
 
 .meta-category:hover {
-  text-decoration: underline;
+  border-color: var(--primary-color);
+  text-decoration: none;
 }
 
 .meta-tags {
@@ -449,128 +489,17 @@ onBeforeUnmount(() => {
 }
 
 .meta-tags .tag {
-  background-color: var(--color-primary-light);
-  color: var(--color-primary);
   padding: 0.1rem 0.5rem;
-  border-radius: var(--radius-pill);
   font-size: 0.7rem;
 }
 
-.article-body {
-  line-height: 1.8;
-  color: var(--color-text);
-  overflow-x: auto;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
+/* HTML 文章：重置所有外部样式，保留原始样式 */
+.html-body :deep(*) {
+  all: revert;
 }
 
-.article-body :deep(h1),
-.article-body :deep(h2),
-.article-body :deep(h3),
-.article-body :deep(h4),
-.article-body :deep(h5),
-.article-body :deep(h6) {
-  margin-top: var(--spacing-xl);
-  margin-bottom: var(--spacing-md);
-  color: var(--color-text);
-  scroll-margin-top: 80px;
-}
-
-.article-body :deep(p) {
-  margin-bottom: var(--spacing-md);
-}
-
-.article-body :deep(code) {
-  background-color: var(--color-bg-code);
-  padding: 0.2em 0.4em;
-  border-radius: var(--radius-sm);
-  font-family: var(--font-mono);
-  font-size: 0.9em;
-}
-
-.article-body :deep(pre) {
-  background-color: var(--color-bg-code);
-  border-radius: var(--radius-sm);
-  overflow-x: auto;
-  font-family: var(--font-mono);
-  max-width: 100%;
-}
-
-.article-body :deep(.codehilite),
-.article-body :deep(table) {
-  max-width: 100%;
-  overflow-x: auto;
-}
-
-.article-body :deep(pre code) {
-  background-color: transparent;
-  padding: 0;
-}
-
-.article-body :deep(img) {
-  max-width: 100%;
-  border-radius: var(--radius-sm);
-}
-
-.article-body :deep(blockquote) {
-  border-left: 4px solid var(--color-primary);
-  padding-left: var(--spacing-md);
-  margin: var(--spacing-md) 0;
-  color: var(--color-text-secondary);
-}
-
-.article-body :deep(table) {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: var(--spacing-md);
-}
-
-.article-body :deep(th),
-.article-body :deep(td) {
-  border: 1px solid var(--color-border);
-  padding: var(--spacing-sm) var(--spacing-md);
-  text-align: left;
-}
-
-.article-body :deep(th) {
-  background-color: var(--color-bg-code);
-}
-
-/* HTML 文章样式覆盖：仅保留与 .article-body 的差异部分 */
-.html-body :deep(.container) {
-  max-width: 100%;
-  margin: 0;
-  padding: 0;
-}
-
-.html-body :deep(.article-content) {
-  background-color: transparent;
-  border-radius: 0;
-  box-shadow: none;
-  padding: 0;
-}
-
-.html-body :deep(.article-body) {
-  margin-bottom: 0;
-}
-
-/* 覆盖 Typora 导出 HTML 中 #write 的默认 padding，减小正文上下留白 */
 .html-body :deep(#write) {
-  padding: 0;
   max-width: 100%;
-}
-
-/* 覆盖 HTML 文章中的硬编码颜色，适配暗色模式 */
-.html-body :deep(p),
-.html-body :deep(li),
-.html-body :deep(td),
-.html-body :deep(th) {
-  color: var(--color-text);
-}
-
-/* HTML 文章的 pre 需要内边距（Markdown 渲染的 pre 不需要） */
-.html-body :deep(pre) {
-  padding: var(--spacing-md);
 }
 
 @media (max-width: 768px) {

@@ -6,15 +6,14 @@
       class="back-to-top"
       aria-label="回到顶部"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-           fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="18 15 12 9 6 15" />
-      </svg>
+      <Icon icon="arrowUp" :size="20" :stroke-width="2.5" />
     </button>
   </transition>
 </template>
 
 <script setup>
+import Icon from '@/components/Icon.vue'
+
 const SCROLL_THRESHOLD = 300
 
 const showBackToTop = ref(false)
@@ -28,7 +27,7 @@ const backToTop = () => {
 }
 
 onMounted(() => {
-  window.addEventListener('scroll', handleScroll)
+  window.addEventListener('scroll', handleScroll, { passive: true })
 })
 
 onUnmounted(() => {
@@ -44,27 +43,30 @@ onUnmounted(() => {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background-color: var(--color-primary);
-  color: white;
+  background: var(--primary-color);
+  color: #ffffff;
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px var(--color-shadow);
-  transition: background-color var(--transition-normal), transform var(--transition-fast), box-shadow var(--transition-fast);
+  box-shadow: var(--shadow-glow);
+  transition: var(--transition);
   z-index: 999;
 }
 
+:root[data-theme="dark"] .back-to-top {
+  color: var(--background-color);
+}
+
 .back-to-top:hover {
-  background-color: var(--color-primary-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px var(--color-shadow);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-glow), var(--shadow-lg);
 }
 
 .back-to-top-fade-enter-active,
 .back-to-top-fade-leave-active {
-  transition: opacity var(--transition-normal), transform var(--transition-normal);
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .back-to-top-fade-enter-from,

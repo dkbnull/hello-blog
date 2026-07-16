@@ -30,6 +30,9 @@
 import { getCategoryName } from '@/data/articles'
 import defaultImage from '@/assets/default.svg'
 
+// 文章摘要最大长度
+const EXCERPT_MAX_LENGTH = 150
+
 const props = defineProps({
   post: {
     type: Object,
@@ -47,10 +50,8 @@ const router = useRouter()
 const postLink = computed(() => `/article/${props.post.category}/${props.post.id}`)
 const target = computed(() => props.openInNewTab ? '_blank' : '_self')
 
-// 点击分类标签时，跳转到分类页（避免触发卡片整体跳转）
 const goCategory = () => {
   if (!props.post.category) return
-  // 新标签页打开时，分类也使用新标签页打开以保持一致体验
   const url = router.resolve(`/category/${props.post.category}`).href
   if (props.openInNewTab) {
     window.open(url, '_blank', 'noopener,noreferrer')
@@ -65,7 +66,9 @@ const excerpt = computed(() => {
     .replace(/#{1,6}\s/g, '')
     .replace(/```[\s\S]*?```/g, '')
     .replace(/\n/g, ' ')
-  return plainText.length > 150 ? plainText.substring(0, 150) + '...' : plainText
+  return plainText.length > EXCERPT_MAX_LENGTH
+    ? plainText.substring(0, EXCERPT_MAX_LENGTH) + '...'
+    : plainText
 })
 </script>
 
@@ -75,7 +78,6 @@ const excerpt = computed(() => {
   align-items: flex-start;
 }
 
-/* 整卡可点击链接，撑满卡片 */
 .post-card-link {
   display: flex;
   gap: var(--spacing-lg);
@@ -94,14 +96,20 @@ const excerpt = computed(() => {
   flex-shrink: 0;
   width: 160px;
   height: 160px;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   overflow: hidden;
+  border: 1px solid var(--glass-border);
 }
 
 .post-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.post-card:hover .post-image img {
+  transform: scale(1.08);
 }
 
 .post-content {
@@ -110,40 +118,54 @@ const excerpt = computed(() => {
 }
 
 .post-title {
-  margin-top: 0;
-  margin-bottom: var(--spacing-sm);
-  font-size: 1.25rem;
-  color: var(--color-text);
-  transition: color var(--transition-normal);
+  margin: 0 0 var(--spacing-sm);
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-color);
+  transition: var(--transition);
 }
 
-.post-card-link:hover .post-title {
-  color: var(--color-primary);
+.post-card:hover .post-title {
+  color: var(--primary-color);
 }
 
 .post-meta {
-  font-size: 0.875rem;
-  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
   margin-bottom: var(--spacing-md);
   display: flex;
   gap: var(--spacing-md);
   flex-wrap: wrap;
+  align-items: center;
+}
+
+.meta-date::before {
+  content: '> ';
+  color: var(--primary-color);
+  opacity: 0.7;
 }
 
 .meta-category {
-  color: var(--color-primary);
+  color: var(--primary-color);
   cursor: pointer;
   text-decoration: none;
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--primary-light);
+  border: 1px solid transparent;
+  transition: var(--transition);
 }
 
 .meta-category:hover {
-  text-decoration: underline;
+  border-color: var(--primary-color);
 }
 
 .post-excerpt {
   margin-bottom: var(--spacing-md);
-  color: var(--color-text-secondary);
-  line-height: 1.6;
+  color: var(--text-secondary);
+  line-height: 1.7;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -151,19 +173,9 @@ const excerpt = computed(() => {
 }
 
 .post-tags {
-  margin-bottom: 0;
   display: flex;
   gap: var(--spacing-sm);
   flex-wrap: wrap;
-}
-
-.tag {
-  background-color: var(--color-primary-light);
-  padding: var(--spacing-xs) 0.75rem;
-  border-radius: var(--radius-pill);
-  font-size: 0.75rem;
-  color: var(--color-primary);
-  transition: background-color var(--transition-normal);
 }
 
 @media (max-width: 768px) {

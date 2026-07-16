@@ -1,9 +1,14 @@
 <template>
   <aside class="sidebar">
-    <h2 class="sidebar-title">分类</h2>
+    <h2 class="sidebar-title">
+      <span class="title-marker"></span>
+      分类
+    </h2>
+
     <div v-if="isLoading" class="sidebar-loading">
       <div class="loading-spinner-sm"></div>
     </div>
+
     <ul v-else class="sidebar-menu">
       <li v-for="category in categories" :key="category.id">
         <router-link
@@ -35,7 +40,6 @@ defineProps({
   }
 })
 
-// 数据为运行时异步加载，通过 computed 响应数据变化
 const categories = computed(() => getCategories())
 const isLoading = computed(() => loading.value)
 </script>
@@ -43,28 +47,53 @@ const isLoading = computed(() => loading.value)
 <style scoped>
 .sidebar {
   width: var(--sidebar-width);
-  background: var(--color-bg-sidebar);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-md);
-  border: 1px solid var(--color-border-sidebar);
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-lg);
+  border: 1px solid var(--glass-border);
   position: sticky;
   top: calc(var(--header-height) + var(--spacing-md));
   align-self: flex-start;
-  /* 限制最大高度为视口可用区域，超出时菜单区域滚动 */
   max-height: calc(100vh - var(--header-height) - var(--spacing-md) * 2);
   display: flex;
   flex-direction: column;
-  box-shadow: 0 2px 10px var(--color-shadow);
-  transition: background-color var(--transition-normal), border-color var(--transition-normal);
+  transition: var(--transition-normal);
+  overflow: hidden;
 }
 
 .sidebar-title {
-  color: var(--color-primary);
-  margin-top: 0;
-  margin-bottom: var(--spacing-lg);
-  font-size: 1.2rem;
-  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--text-color);
+  margin: 0 0 var(--spacing-lg);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--glass-border);
+  letter-spacing: -0.01em;
   flex-shrink: 0;
+}
+
+.title-marker {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-success);
+  box-shadow: 0 0 8px var(--color-success);
+  animation: pulse 2s ease infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
 }
 
 .sidebar-loading {
@@ -77,16 +106,14 @@ const isLoading = computed(() => loading.value)
   list-style: none;
   padding: 0;
   margin: 0;
-  /* 菜单区域可滚动，标题保持固定 */
   overflow-y: auto;
   overflow-x: hidden;
   flex: 1;
   min-height: 0;
-  scrollbar-width: none; /* Firefox 隐藏滚动条 */
-  -ms-overflow-style: none; /* IE/Edge 隐藏滚动条 */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
-/* WebKit 内核浏览器隐藏滚动条 */
 .sidebar-menu::-webkit-scrollbar {
   display: none;
 }
@@ -96,28 +123,54 @@ const isLoading = computed(() => loading.value)
 }
 
 .sidebar-link {
+  position: relative;
   text-decoration: none;
-  color: var(--color-text);
-  transition: all var(--transition-normal);
+  color: var(--text-color);
+  transition: var(--transition);
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem var(--spacing-md);
+  gap: 6px;
+  padding: 6px var(--spacing-sm);
   border-radius: var(--radius-md);
-  font-size: 0.95rem;
+  font-size: var(--font-size-sm);
+  font-family: var(--font-mono);
+  border: 1px solid transparent;
+  overflow: hidden;
+  opacity: 0.85;
+}
+
+.sidebar-link::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--gradient-neon);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.3s ease;
 }
 
 .sidebar-link:hover {
-  background: var(--color-primary-light);
-  color: var(--color-primary);
-  transform: translateX(4px);
+  background: var(--primary-light);
+  color: var(--primary-color);
+  border-color: var(--glass-border);
   text-decoration: none;
+  opacity: 1;
+}
+
+.sidebar-link:hover::before,
+.sidebar-link.active::before {
+  transform: scaleY(1);
 }
 
 .sidebar-link.active {
-  background: var(--color-primary);
-  color: white;
-  font-weight: 500;
+  background: var(--primary-light);
+  color: var(--primary-color);
+  border-color: var(--glass-border);
+  font-weight: 600;
+  opacity: 1;
 }
 
 .sidebar-link .icon {
@@ -130,28 +183,31 @@ const isLoading = computed(() => loading.value)
 
 .count {
   margin-left: auto;
-  font-size: 0.8rem;
-  color: var(--color-text-tertiary);
+  font-size: var(--font-size-xs);
+  font-family: var(--font-mono);
+  color: var(--text-tertiary);
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--primary-light);
+  border: 1px solid transparent;
 }
 
 .sidebar-link.active .count {
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--primary-color);
+  border-color: var(--glass-border);
 }
 
 @media (max-width: 768px) {
   .sidebar {
     width: 100%;
     position: static;
-    /* 移动端不限制高度，使用横向 flex 布局 */
     max-height: none;
-    display: block;
   }
 
   .sidebar-menu {
     display: flex;
     flex-wrap: wrap;
     gap: var(--spacing-sm);
-    /* 移动端取消垂直滚动 */
     overflow-y: visible;
     flex: none;
   }
@@ -162,7 +218,11 @@ const isLoading = computed(() => loading.value)
 
   .sidebar-link {
     padding: var(--spacing-sm);
-    font-size: 0.85rem;
+    font-size: var(--font-size-xs);
+  }
+
+  .sidebar-link::before {
+    display: none;
   }
 }
 </style>

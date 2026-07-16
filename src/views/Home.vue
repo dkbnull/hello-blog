@@ -1,41 +1,35 @@
 <template>
   <div class="home">
-    <div class="container">
-      <div class="page-layout">
-        <Sidebar :active-category="activeCategory" />
-        <main class="page-content">
-          <div class="page-content-header">
-            <h2 class="page-title">{{ pageTitle }}</h2>
-            <SortControl :sort-order="sortOrder" @change="setSortOrder" />
-          </div>
+    <PageContent
+      :title="pageTitle"
+      :active-category="activeCategory"
+      :loading="isLoading"
+      :loading-text="'加载中...'"
+      :empty="sortedItems.length === 0"
+      :empty-text="activeCategory ? '该分类下没有文章' : '请从左侧选择分类查看文章'"
+      :sort-order="sortOrder"
+      @sort-change="setSortOrder"
+    >
+      <template v-if="!activeCategory && sortedItems.length === 0" #empty>
+        <div class="empty-state">
+          <p>欢迎来到 Hello Blog！</p>
+          <p>请从左侧选择分类查看文章。</p>
+        </div>
+      </template>
 
-          <div v-if="isLoading" class="loading-state">
-            <div class="loading-spinner"></div>
-            <p>加载中...</p>
-          </div>
-          <div v-else-if="sortedItems.length === 0" class="empty-state">
-            <p v-if="activeCategory">该分类下没有文章</p>
-            <template v-else>
-              <p>欢迎来到 Hello Blog！</p>
-              <p>请从左侧选择分类查看文章。</p>
-            </template>
-          </div>
+      <PostCard v-for="post in pagedItems" :key="`${post.category}-${post.id}`" :post="post" />
 
-          <template v-else>
-            <div class="posts-container">
-              <PostCard v-for="post in pagedItems" :key="`${post.category}-${post.id}`" :post="post" />
-            </div>
-            <Pagination v-model:current-page="currentPage" :total-pages="totalPages" />
-          </template>
-        </main>
-      </div>
-    </div>
+      <template #pagination>
+        <Pagination v-model:current-page="currentPage" :total-pages="totalPages" />
+      </template>
+    </PageContent>
   </div>
 </template>
 
 <script setup>
 import { getAllArticles, getArticlesByCategory, getCategoryName, loading } from '@/data/articles'
 import { usePagination } from '@/composables/usePagination'
+import PageContent from '@/components/PageContent.vue'
 
 const route = useRoute()
 const activeCategory = ref('')
@@ -70,10 +64,6 @@ watch(() => route.params.category, (newCategory) => {
   activeCategory.value = newCategory || ''
   resetPage()
 }, { immediate: true })
-
-onMounted(() => {
-  activeCategory.value = route.params.category || ''
-})
 </script>
 
 <style scoped>

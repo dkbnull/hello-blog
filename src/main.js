@@ -12,7 +12,7 @@ const pinia = createPinia()
 app.use(pinia)
 
 const appStore = useAppStore()
-appStore.initDarkMode()
+appStore.initTheme()
 
 app.use(router)
   .use(seoAnalytics, { router, siteUrl: 'https://blog.wbnull.cn' })
