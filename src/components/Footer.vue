@@ -26,7 +26,6 @@
   position: relative;
   background: var(--background-secondary);
   border-top: 1px solid var(--glass-border);
-  box-shadow: inset 0 1px 0 rgba(66, 184, 131, 0.2);
   padding: var(--spacing-md) 0;
   margin-top: auto;
 }

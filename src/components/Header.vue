@@ -103,9 +103,7 @@ onMounted(() => {
   top: 0;
   z-index: 100;
   height: var(--header-height);
-  background: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: var(--background-color);
   border-bottom: 1px solid var(--glass-border);
 }
 
@@ -321,9 +319,7 @@ onMounted(() => {
     left: 0;
     right: 0;
     flex-direction: column;
-    background: var(--glass-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: var(--background-color);
     border-bottom: 1px solid var(--glass-border);
     padding: var(--spacing-md);
     gap: var(--spacing-xs);

@@ -141,7 +141,7 @@ const linkSections = [
 
 .link-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: var(--spacing-md);
 }
 
@@ -241,7 +241,7 @@ const linkSections = [
 
 @media (max-width: 480px) {
   .link-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 </style>
