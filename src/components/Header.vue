@@ -308,6 +308,10 @@ onMounted(() => {
 }
 
 @media (max-width: 768px) {
+  .logo {
+    display: none;
+  }
+
   .menu-toggle {
     display: block;
   }
@@ -330,10 +334,16 @@ onMounted(() => {
     display: flex;
   }
 
-  .nav-link {
+  .nav-open .nav-link,
+  .nav-open .nav-link.router-link-active {
     width: 100%;
     padding: var(--spacing-sm) var(--spacing-md);
     text-align: left;
+  }
+
+  .nav-open .nav-link.router-link-active {
+    background: var(--primary-light);
+    border-radius: var(--radius-md);
   }
 
   .search-input {
