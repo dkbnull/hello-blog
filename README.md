@@ -79,67 +79,11 @@ Hello Blog 是一个基于 Vue 3 + Vite 构建的个人博客系统，用于分�
 | Vue Router               | 5.0.3  | 路由管理        |
 | Pinia                    | 3.0.4  | 状态管理        |
 | Vite                     | 8.0.8  | 构建工具        |
+| @vitejs/plugin-vue       | 6.0.2  | Vue SFC 编译    |
 | marked                   | 17.0.4 | Markdown 解析 |
 | unplugin-auto-import     | 21.0.0 | API 自动导入    |
 | unplugin-vue-components  | 32.0.0 | 组件自动导入      |
 | vite-plugin-vue-devtools | 8.1.1  | Vue 开发者工具   |
-
-## 项目结构
-
-```
-hello-blog/
-├── plugins/                        # Vite 插件
-│   └── vite-plugin-seo-analytics.js    # SEO 分析构建插件
-├── public/
-│   ├── articles/                   # 文章目录（运行时 fetch 加载）
-│   │   ├── categories.json         # 分类配置（id、name、icon、tags、image）
-│   │   ├── {category}/             # 分类目录，内放 {id}-{title}.html 文章
-│   │   │   └── meta.json           # 文章元数据清单（title/ext/date/tags/image 等）
-│   │   ├── frontend/
-│   │   └── backend/
-│   ├── icons/                      # 分类图标（categories.json 的 icon 字段引用）
-│   ├── images/                     # 文章封面图（按分类子目录组织）
-│   │   ├── frontend/
-│   │   └── backend/
-│   └── favicon.svg                 # Logo
-├── src/
-│   ├── assets/                     # 资源文件（default.svg 兜底图等）
-│   ├── components/                 # 组件
-│   │   ├── BackToTop.vue           # 回到顶部
-│   │   ├── Footer.vue              # 底部
-│   │   ├── Header.vue              # 顶部导航
-│   │   ├── Pagination.vue          # 分页
-│   │   ├── PostCard.vue            # 文章卡片
-│   │   ├── Sidebar.vue             # 侧边栏
-│   │   └── SortControl.vue         # 排序控制
-│   ├── composables/                # 组合式函数
-│   │   ├── usePagination.js        # 分页逻辑
-│   │   └── useSeo.js               # SEO 元信息管理
-│   ├── data/                       # 数据层
-│   │   ├── articles.js             # 文章查询/搜索/内容加载
-│   │   └── data.js                 # 运行时加载分类与文章元数据（fetch + ref）
-│   ├── layouts/
-│   │   └── DefaultLayout.vue       # 默认布局
-│   ├── plugins/
-│   │   └── seoAnalytics.js         # SEO 分析运行时插件
-│   ├── router/
-│   │   └── index.js                # 路由配置
-│   ├── stores/
-│   │   └── app.js                  # 全局状态（深色模式等）
-│   ├── views/                      # 页面
-│   │   ├── About.vue               # 关于
-│   │   ├── ArticleDetail.vue       # 文章详情
-│   │   ├── Home.vue                # 首页/分类页
-│   │   ├── NotFound.vue            # 404
-│   │   └── Search.vue              # 搜索
-│   ├── App.vue                     # 根组件（启动时触发数据加载）
-│   ├── main.js                     # 入口文件
-│   └── style.css                   # 全局样式（含 CSS 变量）
-├── .env                            # 环境变量
-├── index.html                      # HTML 入口
-├── vite.config.js                  # Vite 配置
-└── package.json
-```
 
 ## 如何添加文章
 
