@@ -32,6 +32,7 @@ import { usePagination } from '@/composables/usePagination'
 import PageContent from '@/components/PageContent.vue'
 
 const route = useRoute()
+const router = useRouter()
 const activeCategory = ref('')
 
 const isLoading = computed(() => loading.value)
@@ -58,12 +59,15 @@ const {
   pagedItems,
   setSortOrder,
   resetPage
-} = usePagination(allPosts)
+} = usePagination(allPosts, { route, router })
+
+// 初始化时设置分类，但保留从 URL 读取的页码
+activeCategory.value = route.params.category || ''
 
 watch(() => route.params.category, (newCategory) => {
   activeCategory.value = newCategory || ''
   resetPage()
-}, { immediate: true })
+})
 </script>
 
 <style scoped>

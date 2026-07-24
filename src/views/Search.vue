@@ -47,16 +47,23 @@ import { usePagination } from '@/composables/usePagination'
 import PageContent from '@/components/PageContent.vue'
 
 const route = useRoute()
+const router = useRouter()
 const keyword = ref('')
 
 const results = computed(() => searchArticles(keyword.value))
 
-const { currentPage, sortOrder, totalPages, pagedItems, setSortOrder, resetPage } = usePagination(results)
+const { currentPage, sortOrder, totalPages, pagedItems, setSortOrder, resetPage } = usePagination(results, {
+  route,
+  router
+})
+
+// 初始化时设置关键词，但保留从 URL 读取的页码
+keyword.value = route.query.q || ''
 
 watch(() => route.query.q, (newQ) => {
   keyword.value = newQ || ''
   resetPage()
-}, { immediate: true })
+})
 </script>
 
 <style scoped>
