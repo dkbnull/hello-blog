@@ -16,6 +16,10 @@
           >
             {{ getCategoryName(post.category) }}
           </span>
+          <span class="meta-views">
+            <Icon icon="view" :size="14" />
+            {{ formatViewCount(viewCount) }}
+          </span>
         </div>
         <p class="post-excerpt">{{ excerpt }}</p>
         <div class="post-tags" v-if="post.tags?.length">
@@ -29,6 +33,7 @@
 <script setup>
 import { getCategoryName } from '@/data/articles'
 import defaultImage from '@/assets/default.svg'
+import { fetchArticleView, formatViewCount } from '@/composables/useViewCount'
 
 // 文章摘要最大长度
 const EXCERPT_MAX_LENGTH = 150
@@ -46,6 +51,15 @@ const props = defineProps({
 })
 
 const router = useRouter()
+
+// 文章点击量（仅展示，不累加）
+const viewCount = ref(0)
+
+onMounted(() => {
+  fetchArticleView(props.post.category, props.post.id).then(count => {
+    viewCount.value = count
+  })
+})
 
 const postLink = computed(() => `/article/${props.post.category}/${props.post.id}`)
 const target = computed(() => props.openInNewTab ? '_blank' : '_self')
@@ -160,6 +174,14 @@ const excerpt = computed(() => {
 
 .meta-category:hover {
   border-color: var(--primary-color);
+}
+
+.meta-views {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0.75;
+  font-variant-numeric: tabular-nums;
 }
 
 .post-excerpt {

@@ -40,6 +40,11 @@
                   <span v-for="tag in article.tags" :key="tag" class="tag">{{ tag }}</span>
                 </span>
               </template>
+              <span class="meta-separator">·</span>
+              <span class="meta-views">
+                <Icon icon="view" :size="14" />
+                {{ formatViewCount(viewCount) }}
+              </span>
             </div>
             <div ref="contentRef" class="article-body" :class="{ 'html-body': isHtmlContent }"
                  v-html="articleContent"></div>
@@ -53,6 +58,7 @@
 <script setup>
 import { getArticleById, getArticleContent, getCategoryName, loadArticlesData, loaded } from '@/data/articles'
 import { useArticleSeo } from '@/composables/useSeo'
+import { incrementArticleView, formatViewCount } from '@/composables/useViewCount'
 
 const HEADER_OFFSET = 80
 const SCROLL_POSITION_OFFSET = 100
@@ -69,6 +75,7 @@ const isLoading = ref(true)
 const contentRef = ref(null)
 const headings = ref([])
 const activeHeadingId = ref('')
+const viewCount = ref(0)
 
 let scrollListener = null
 let isManualTocClick = false
@@ -211,6 +218,13 @@ const renderMermaid = async () => {
   }
 }
 
+// 触发文章点击量统计（异步累加，不阻塞内容渲染）
+const trackViewCount = () => {
+  incrementArticleView(categoryId.value, articleId.value).then(count => {
+    viewCount.value = count
+  })
+}
+
 const loadArticleContent = async () => {
   isLoading.value = true
   // 确保文章清单数据已加载完成，否则 getArticleById 找不到文章
@@ -220,6 +234,7 @@ const loadArticleContent = async () => {
   try {
     headings.value = []
     activeHeadingId.value = ''
+    viewCount.value = 0
     const content = await getArticleContent(categoryId.value, articleId.value)
     isHtmlContent.value = content.startsWith('<!DOCTYPE html>') || content.startsWith('<html')
     // 对 HTML 文章：提取 body 内容，隐藏自带的标题和 meta（由组件统一渲染）
@@ -229,6 +244,8 @@ const loadArticleContent = async () => {
       articleContent.value = content
     }
     isLoading.value = false
+    // 文章内容加载成功后，触发点击量统计（异步执行，不阻塞渲染）
+    trackViewCount()
     await nextTick()
     // 隐藏 HTML 文章中自带的标题和 meta（组件已统一渲染）
     if (isHtmlContent.value && contentRef.value) {
@@ -491,6 +508,14 @@ onBeforeUnmount(() => {
 .meta-tags .tag {
   padding: 0.1rem 0.5rem;
   font-size: 0.7rem;
+}
+
+.meta-views {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0.75;
+  font-variant-numeric: tabular-nums;
 }
 
 /* HTML 文章：重置所有外部样式，保留原始样式 */
